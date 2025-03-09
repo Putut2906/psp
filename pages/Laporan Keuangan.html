@@ -281,7 +281,15 @@ th {
                 balance += t.type === "income" ? t.amount : -t.amount;
                 tableRows.push([t.date, t.description, t.type === "income" ? t.amount.toLocaleString() : "-", t.type === "expense" ? t.amount.toLocaleString() : "-", balance.toLocaleString()]);
             });
-            doc.autoTable({ head: [tableColumn], body: tableRows, startY: 20 });
+            doc.autoTable({
+    head: [tableColumn],
+    body: tableRows,
+    startY: 20,
+    styles: { lineWidth: 0.5, lineColor: [0, 0, 0] }, // Memberikan border di semua sel
+    headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0], lineWidth: 0.5 }, // Header dengan warna latar abu-abu
+    tableLineColor: [0, 0, 0], // Warna garis tabel hitam
+    tableLineWidth: 0.5 // Ketebalan garis tabel
+});
             doc.save("Laporan_Keuangan.pdf");
         });
         updateTable();
