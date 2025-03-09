@@ -4,563 +4,284 @@
     <meta charset="UTF-8" />
     <title>Singghara</title>
     <link rel="stylesheet" href="https://putut2906.github.io/psp/style.css" />
-    <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
-
+    <link
+      href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
       rel="stylesheet"
-
     />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   </head>
-
   <body>
-
     <div id="sidebar-container"></div>
-
     <!-- Sidebar akan dimuat di sini -->
-
     <script>
-
       function initSidebar() {
-
         let arrows = document.querySelectorAll(".arrow");
-
         arrows.forEach((arrow) => {
-
           arrow.addEventListener("click", (e) => {
-
             let arrowParent = e.target.closest("li"); // Menggunakan closest() untuk keamanan
-
             arrowParent.classList.toggle("showMenu");
-
           });
-
         });
 
-
-
         let sidebar = document.querySelector(".sidebar");
-
         let sidebarBtn = document.querySelector(".bx-menu");
 
-
-
         if (sidebar && sidebarBtn) {
-
           sidebarBtn.addEventListener("click", () => {
-
             sidebar.classList.toggle("close");
-
           });
-
         }
-
       }
-
-
 
       document.addEventListener("DOMContentLoaded", () => {
-
         fetch("https://putut2906.github.io/psp/sidebar.html")
-
           .then((response) => response.text())
-
           .then((data) => {
-
             document.getElementById("sidebar-container").innerHTML = data;
-
             initSidebar(); // Panggil fungsi setelah sidebar dimuat
-
           });
-
       });
-
     </script>
-
   </body>
-
 </html>
-
     <style>
-
         /* Reset */
-
         * {
-
             margin: 0;
-
             padding: 0;
-
             box-sizing: border-box;
-
         }
-
       body {
-
         font-family: Arial, sans-serif;
-
         margin: 0;
-
         padding: 0;
-
         background-color: #f4f4f4;
-
         display: flex;
-
         flex-direction: column;
-
         align-items: center;
-
         margin-left: 80px;
-
       }
 
-
-
         /* Container Utama */
-
         .container {
-
             width: 90%;
-
             max-width: 800px;
-
             background: white;
-
             padding: 20px;
-
             border-radius: 8px;
-
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-
         }
-
-
 
         h2 {
-
             text-align: center;
-
             margin-bottom: 20px;
-
             color: #007bff;
-
         }
-
-
 
         section {
-
             margin-bottom: 20px;
-
         }
-
-
 
         h3 {
-
             background: #007bff;
-
             color: white;
-
             padding: 8px;
-
             border-radius: 5px;
-
         }
-
-
 
         ul {
-
             list-style-type: none;
-
             padding-left: 10px;
-
         }
-
-
 
         li {
-
             margin-bottom: 8px;
-
             font-size: 16px;
-
         }
-
-
 
         /* Blok Kode */
-
         .code {
-
             background: #f9f9f9;
-
             padding: 10px;
-
             border: 1px solid #ccc;
-
             border-radius: 5px;
-
             margin-top: 10px;
-
             position: relative;
-
         }
-
-
 
         .code pre {
-
             white-space: pre-wrap;
-
             word-wrap: break-word;
-
             font-size: 14px;
-
         }
-
-
 
         .btn-copy {
-
             position: absolute;
-
             top: 5px;
-
             right: 5px;
-
             background-color: #007bff;
-
             color: white;
-
             border: none;
-
             padding: 5px 8px;
-
             font-size: 12px;
-
             border-radius: 3px;
-
             cursor: pointer;
-
             transition: background 0.3s ease;
-
         }
-
-
 
         .btn-copy:hover {
-
             background-color: #0056b3;
-
         }
-
-
 
         /* Tabel */
-
         .table-container {
-
             overflow-x: auto;
-
         }
-
-
 
         table {
-
             width: 100%;
-
             border-collapse: collapse;
-
             margin-top: 10px;
-
         }
-
-
 
         th, td {
-
             border: 1px solid #000;
-
             padding: 8px;
-
             text-align: center;
-
             font-size: 14px;
-
         }
-
-
 
         th {
-
             background-color: #007bff;
-
             color: white;
-
         }
-
-
 
         /* Mode Gelap */
-
         .dark-mode {
-
             background-color: #222;
-
             color: white;
-
         }
-
-
 
         .dark-mode .container {
-
             background-color: #333;
-
             color: white;
-
         }
-
-
 
         .dark-mode h3 {
-
             background: #0056b3;
-
         }
-
-
 
         .dark-mode .code {
-
             background: #444;
-
             border-color: #666;
-
         }
-
-
 
         .toggle-dark {
-
             margin: 10px auto;
-
             display: flex;
-
             justify-content: center;
-
         }
-
-
 
         .toggle-dark button {
-
             background: #007bff;
-
             color: white;
-
             border: none;
-
             padding: 10px;
-
             border-radius: 5px;
-
             cursor: pointer;
-
             transition: background 0.3s ease;
-
         }
-
-
 
         .toggle-dark button:hover {
-
             background: #0056b3;
-
         }
-
-
 
         /* Responsif */
-
         @media (max-width: 480px) {
-
             .container {
-
                 width: 100%;
-
                 padding: 15px;
-
             }
-
-
 
             th, td {
-
                 font-size: 12px;
-
                 padding: 6px;
-
             }
-
-
 
             .btn-copy {
-
                 font-size: 10px;
-
                 padding: 4px;
-
             }
-
         }
-
     </style>
-
 </head>
-
 <body>
 
-
-
 <div class="toggle-dark">
-
     <button onclick="toggleDarkMode()">🌙 Mode Gelap</button>
-
 </div>
-
-
 
 <div class="container">
-
     <h2>Panduan Elemen HTML</h2>
 
-
-
     <section>
-
         <h3>Elemen Daftar</h3>
-
         <div class="code">
-
             <button class="btn-copy" onclick="copyCode(this)">Copy</button>
-
             <pre><code>&lt;ol&gt;
-
     &lt;li&gt;Item 1&lt;/li&gt;
-
     &lt;li&gt;Item 2&lt;/li&gt;
-
 &lt;/ol&gt;</code></pre>
-
         </div>
-
         <ul>
-
             <li><strong>&lt;ol&gt;</strong> Membuat daftar berurutan.</li>
-
             <li><strong>&lt;ul&gt;</strong> Membuat daftar tidak berurutan.</li>
-
             <li><strong>&lt;li&gt;</strong> Elemen setiap item dalam daftar.</li>
-
         </ul>
-
     </section>
 
-
-
     <section>
-
         <h3>Elemen Formulir</h3>
-
         <div class="code">
-
             <button class="btn-copy" onclick="copyCode(this)">Copy</button>
-
             <pre><code>&lt;input type="text" placeholder="Nama Anda"&gt;</code></pre>
-
         </div>
-
         <ul>
-
             <li><strong>&lt;form&gt;</strong> Membuat formulir.</li>
-
             <li><strong>&lt;input&gt;</strong> Elemen input.</li>
-
         </ul>
-
     </section>
-
-
 
     <section>
-
         <h3>Elemen Tabel</h3>
-
         <div class="table-container">
-
             <table>
-
                 <tr>
-
                     <th>Judul Kolom</th>
-
                 </tr>
-
                 <tr>
-
                     <td>Data</td>
-
                 </tr>
-
             </table>
-
         </div>
-
     </section>
-
 </div>
 
-
-
 <footer>
-
     <p style="text-align: center; padding: 10px;">&copy; 2025 Panduan HTML Interaktif</p>
-
 </footer>
 
-
-
 <script>
-
     function copyCode(button) {
-
         const codeBlock = button.nextElementSibling.textContent;
-
         navigator.clipboard.writeText(codeBlock).then(() => {
-
             button.textContent = "✔ Disalin!";
-
             setTimeout(() => button.textContent = "Copy", 2000);
-
         }).catch(err => console.error("Gagal menyalin:", err));
-
     }
-
-
 
     function toggleDarkMode() {
-
         document.body.classList.toggle("dark-mode");
-
     }
-
 </script>
-
 </body>
-
