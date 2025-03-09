@@ -14,7 +14,7 @@ body{
   position: fixed;
   top: 0;
   left: 0;
-  height: auto;
+  height: 100%;
   width: 260px;
   background: #3674B5;
   z-index: 100;
