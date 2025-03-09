@@ -44,63 +44,96 @@
     </script>
   </body>
 </html>
-
     <style>
         /* Reset */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0px;
-            padding: 0px;
-            background-color: #f4f4f4;
-            display: flex;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        /* Container utama */
-        .container {
-            flex: 1;
-            margin-left: 80px; /* Sesuaikan dengan ukuran sidebar */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             padding: 20px;
+        }
+
+        /* Container Utama */
+        .container {
+            width: 90%;
+            max-width: 800px;
             background: white;
+            padding: 20px;
             border-radius: 8px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         h2 {
             text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
         }
 
-        /* Blok kode */
-        .code {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 10px 0;
-            background-color: #f9f9f9;
+        section {
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            background: #007bff;
+            color: white;
+            padding: 8px;
             border-radius: 5px;
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
+        ul {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        /* Blok Kode */
+        .code {
+            background: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .code pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 14px;
         }
 
         .btn-copy {
-            cursor: pointer;
-            padding: 5px;
+            position: absolute;
+            top: 5px;
+            right: 5px;
             background-color: #007bff;
             color: white;
             border: none;
+            padding: 5px 8px;
+            font-size: 12px;
             border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.3s ease;
         }
 
-        pre {
-            white-space: pre-wrap;
+        .btn-copy:hover {
+            background-color: #0056b3;
         }
 
-        /* Tabel responsif */
+        /* Tabel */
         .table-container {
-            width: 100%;
             overflow-x: auto;
         }
 
@@ -111,7 +144,7 @@
         }
 
         th, td {
-            border: 1px solid #000; /* Border hitam tebal */
+            border: 1px solid #000;
             padding: 8px;
             text-align: center;
             font-size: 14px;
@@ -122,11 +155,51 @@
             color: white;
         }
 
-        /* MEDIA QUERY untuk layar kecil */
+        /* Mode Gelap */
+        .dark-mode {
+            background-color: #222;
+            color: white;
+        }
+
+        .dark-mode .container {
+            background-color: #333;
+            color: white;
+        }
+
+        .dark-mode h3 {
+            background: #0056b3;
+        }
+
+        .dark-mode .code {
+            background: #444;
+            border-color: #666;
+        }
+
+        .toggle-dark {
+            margin: 10px auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .toggle-dark button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-dark button:hover {
+            background: #0056b3;
+        }
+
+        /* Responsif */
         @media (max-width: 480px) {
             .container {
-                width: 90%;
-                padding: 10px;
+                width: 100%;
+                padding: 15px;
             }
 
             th, td {
@@ -135,7 +208,7 @@
             }
 
             .btn-copy {
-                font-size: 12px;
+                font-size: 10px;
                 padding: 4px;
             }
         }
@@ -143,90 +216,43 @@
 </head>
 <body>
 
+<div class="toggle-dark">
+    <button onclick="toggleDarkMode()">🌙 Mode Gelap</button>
+</div>
+
 <div class="container">
     <h2>Panduan Elemen HTML</h2>
 
     <section>
         <h3>Elemen Daftar</h3>
         <div class="code">
-            <div class="header">
-                <button class="btn-copy" onclick="copyCode()">Copy</button>
-                <span>HTML</span>
-            </div>
-            <pre>
-                <code>&lt;ol&gt;
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            <pre><code>&lt;ol&gt;
     &lt;li&gt;Item 1&lt;/li&gt;
     &lt;li&gt;Item 2&lt;/li&gt;
-&lt;/ol&gt;</code>
-            </pre>
+&lt;/ol&gt;</code></pre>
         </div>
         <ul>
-            <li><strong>&lt;ol&gt;</strong> Membuat daftar berurutan (numbered list).</li>
-            <li><strong>&lt;ul&gt;</strong> Membuat daftar tidak berurutan (bullet list).</li>
-            <li><strong>&lt;li&gt;</strong> Elemen untuk setiap item dalam daftar.</li>
+            <li><strong>&lt;ol&gt;</strong> Membuat daftar berurutan.</li>
+            <li><strong>&lt;ul&gt;</strong> Membuat daftar tidak berurutan.</li>
+            <li><strong>&lt;li&gt;</strong> Elemen setiap item dalam daftar.</li>
         </ul>
     </section>
 
     <section>
         <h3>Elemen Formulir</h3>
-        <ul>
-            <li><strong>&lt;form&gt;</strong> Membuat formulir untuk input pengguna.</li>
-            <li><strong>&lt;input&gt;</strong> Elemen input (teks, tombol, dll).</li>
-        </ul>
         <div class="code">
-            <div class="header">
-                <button class="btn-copy" onclick="copyCode()">Copy</button>
-                <span>HTML</span>
-            </div>
-            <pre>
-                <code>&lt;input type="text" placeholder="Nama Anda"&gt;</code>
-            </pre>
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            <pre><code>&lt;input type="text" placeholder="Nama Anda"&gt;</code></pre>
         </div>
         <ul>
-            <li><strong>&lt;textarea&gt;</strong> Membuat area teks multi-baris.</li>
-            <li><strong>&lt;button&gt;</strong> Membuat tombol.</li>
-            <li><strong>&lt;label&gt;</strong> Memberikan label untuk elemen input.</li>
+            <li><strong>&lt;form&gt;</strong> Membuat formulir.</li>
+            <li><strong>&lt;input&gt;</strong> Elemen input.</li>
         </ul>
     </section>
 
     <section>
-        <h3>Elemen Multimedia</h3>
-        <ul>
-            <li><strong>&lt;audio&gt;</strong> Menyisipkan audio.</li>
-        </ul>
-        <div class="code">
-            <div class="header">
-                <button class="btn-copy" onclick="copyCode()">Copy</button>
-                <span>HTML</span>
-            </div>
-            <pre>
-                <code>&lt;audio controls&gt;
-    &lt;source src="audio.mp3" type="audio/mpeg"&gt;
-&lt;/audio&gt;</code>
-            </pre>
-        </div>
-
-        <ul>
-            <li><strong>&lt;video&gt;</strong> Menyisipkan video.</li>
-        </ul>
-        <div class="code">
-            <div class="header">
-                <button class="btn-copy" onclick="copyCode()">Copy</button>
-                <span>HTML</span>
-            </div>
-            <pre>
-                <code>&lt;video controls&gt;
-    &lt;source src="video.mp4" type="video/mp4"&gt;
-&lt;/video&gt;</code>
-            </pre>
-        </div>
-    </section>
-
-    <section>
-        <h3>Elemen Khusus</h3>
-        <ul>
-            <li><strong>&lt;table&gt;</strong> Membuat tabel data.</li>
-        </ul>
+        <h3>Elemen Tabel</h3>
         <div class="table-container">
             <table>
                 <tr>
@@ -237,27 +263,24 @@
                 </tr>
             </table>
         </div>
-        <ul>
-            <li><strong>&lt;div&gt;</strong> Elemen pembungkus serbaguna untuk mengelompokkan konten.</li>
-            <li><strong>&lt;span&gt;</strong> Membungkus teks untuk styling tertentu.</li>
-        </ul>
     </section>
 </div>
 
 <footer>
-    <p style="text-align: center;">&copy; 2025 Panduan Belajar HTML Lengkap</p>
+    <p style="text-align: center; padding: 10px;">&copy; 2025 Panduan HTML Interaktif</p>
 </footer>
 
 <script>
-    function copyCode() {
-        const codeBlock = event.target.closest('.code').querySelector('pre code').textContent;
+    function copyCode(button) {
+        const codeBlock = button.nextElementSibling.textContent;
         navigator.clipboard.writeText(codeBlock).then(() => {
-            alert("Kode berhasil disalin!");
-        }).catch(err => {
-            console.error("Gagal menyalin teks: ", err);
-        });
+            button.textContent = "✔ Disalin!";
+            setTimeout(() => button.textContent = "Copy", 2000);
+        }).catch(err => console.error("Gagal menyalin:", err));
+    }
+
+    function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
     }
 </script>
-
 </body>
-</html>
