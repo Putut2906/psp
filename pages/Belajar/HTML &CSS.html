@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>Singghara</title>
-    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="https://putut2906.github.io/psp/style.css" />
     <link
       href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
       rel="stylesheet"
@@ -34,7 +34,7 @@
       }
 
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/sidebar.html")
+        fetch("https://putut2906.github.io/psp/sidebar.html")
           .then((response) => response.text())
           .then((data) => {
             document.getElementById("sidebar-container").innerHTML = data;
@@ -44,313 +44,529 @@
     </script>
   </body>
 </html>
-
-<style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.8;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f9;
-      color: #333;
-    }
-    nav a {
-      color: rgb(255, 255, 255);
-      text-decoration: none;
-      margin: 0 10px;
-      font-weight: bold;
-    }
-    nav a:hover {
-      text-decoration: none;
-      border-radius: 7px;
-      background-color: crimson;
-      padding: 5px 5px;
-    }
-    main {
-      padding: 20px;
-    }
-    section {
-      margin-bottom: 30px;
-    }
-    h1, h2 {
-      color: #000305;
-    }
-    footer {
-      background: #00060e;
-      color: white;
-      text-align: center;
-      padding: 10px 0;
-    }
-    .code {
-      position: relative;
-      width: 400px;;
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+      body {
+        font-family: Arial, sans-serif;
         margin: 0;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        background-color: #000000;
-        color: #f4f4f9;
-    }
-    .code .header {
+        padding: 0;
+        background-color: #f4f4f4;
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
         align-items: center;
-        padding: 5px 10px;
-        background-color: #474747;
-        border-bottom: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 14px;
-        color: #ffffff;
+        margin-left: 80px;
       }
-      .code .header .btn-copy {
-        background-color: crimson;
-        color: white;
-        border: none;
-        padding: 3px 5px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 14px;
-      }
-      .code .header .btn-copy:hover {
-        background-color: #0056b3;
-      }
-      .code pre {
-        margin: 0;
-        padding: 0px;
-        overflow: auto;
-        max-height: 300px;
-        font-family: 'Courier New', Courier, monospace;
-        font-size: 14px;
-        white-space: pre;
-      }
-    ul {
-      padding-left: 20px;
-    }
-  </style>
-  </head>
-  <body>
-  <main>
-    <section id="pengertian-html">
-      <h2>Pengertian HTML</h2>
-      <p style="text-align: justify; text-indent: 40px;" >HTML, singkatan dari <strong>HyperText Markup Language</strong>, adalah bahasa markup standar yang digunakan untuk membuat dan menyusun halaman web. HTML bukan bahasa pemrograman karena tidak memiliki logika pemrograman seperti variabel atau fungsi, melainkan merupakan bahasa markup yang digunakan untuk mengatur struktur dan elemen-elemen dalam dokumen web.</p><p style="text-align: justify; text-indent: 40px;">HTML digunakan untuk mendefinisikan struktur konten pada halaman web. Setiap elemen HTML ditulis menggunakan <strong>tag</strong>, yang biasanya memiliki bentuk seperti ini: <tag>...</tag>. Tag terdiri dari tanda kurung sudut <strong>(< >)</strong> dan nama elemen, serta biasanya diikuti oleh konten atau atribut tertentu.</p><p style="text-align: justify; text-indent: 40px;">Secara keseluruhan, fungsi HTML adalah membangun struktur dasar dari halaman web, menampilkan konten, dan memungkinkan integrasi dengan teknologi lainnya. Tanpa HTML, halaman web modern tidak dapat dibuat atau ditampilkan di browser. Sebagai bahasa markup standar, HTML adalah fondasi untuk pengembangan web yang lebih lanjut.</p>
-    </section>
-    <section id="struktur-html">
-      <h2>Struktur Dasar HTML</h2>
-      <p style="text-align: justify; text-indent: 40px;">Struktur dasar HTML adalah rangkaian elemen yang membentuk halaman web. Setiap elemen memiliki tujuan tertentu dan ditulis dalam format tag. Berikut adalah penjelasan lengkap tentang struktur dasar HTML:</p></section>
-      <div class="code">
-        <div class="header"><button class="btn-copy" onclick="copyCode()">Copy</button><span>HTML<span></div>
-          <pre id="code-block">
-            <code>&lt;!DOCTYPE html&gt;
-  &lt;html lang="en"&gt;
-  &lt;head&gt;
-      &lt;meta charset="UTF-8"&gt;
-      &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
-      &lt;meta name="description" content="Deskripsi halaman di sini"&gt;
-      &lt;meta name="keywords" content="kata, kunci, di, sini"&gt;
-      &lt;meta name="author" content="Nama Penulis"&gt;
-      &lt;link rel="stylesheet" href="styles.css"&gt;
-      &lt;title&gt;Judul Halaman&lt;/title&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-      &lt;header&gt;
-          &lt;h1&gt;Judul Utama&lt;/h1&gt;
-          &lt;nav&gt;
-              &lt;ul&gt;
-                  &lt;li&gt;&lt;a href="#section1"&gt;Section 1&lt;/a&gt;&lt;/li&gt;
-                  &lt;li&gt;&lt;a href="#section2"&gt;Section 2&lt;/a&gt;&lt;/li&gt;
-                  &lt;li&gt;&lt;a href="#section3"&gt;Section 3&lt;/a&gt;&lt;/li&gt;
-              &lt;/ul&gt;
-          &lt;/nav&gt;
-      &lt;/header&gt;
-  
-      &lt;main&gt;
-          &lt;section id="section1"&gt;
-              &lt;h2&gt;Section 1&lt;/h2&gt;
-              &lt;p&gt;Isi dari section 1.&lt;/p&gt;
-          &lt;/section&gt;
-          &lt;section id="section2"&gt;
-              &lt;h2&gt;Section 2&lt;/h2&gt;
-              &lt;p&gt;Isi dari section 2.&lt;/p&gt;
-          &lt;/section&gt;
-          &lt;section id="section3"&gt;
-              &lt;h2&gt;Section 3&lt;/h2&gt;
-              &lt;p&gt;Isi dari section 3.&lt;/p&gt;
-          &lt;/section&gt;
-      &lt;/main&gt;
-  
-      &lt;footer&gt;
-          &lt;p&gt;&copy; 2025 Nama Anda. All rights reserved.&lt;/p&gt;
-      &lt;/footer&gt;
-  
-      &lt;script src="script.js"&gt;&lt;/script&gt;
-  &lt;/body&gt;
-  &lt;/html&gt;
-  </code>
-          </pre>
-      </div>
-        </div>
-  <section>
-  <ul>
-    <li style="text-align: justify;"><strong>&lt;!DOCTYPE html&gt;</strong>Ini adalah deklarasi tipe dokumen yang memberi tahu browser bahwa dokumen ini adalah HTML5.</li>
-    <li style="text-align: justify;"><strong>&lt;html&gt;</strong> Elemen ini merupakan elemen root dari sebuah halaman web. Semua elemen HTML lainnya akan berada di dalam elemen <strong>&lt;html&gt;</strong></li> 
-    <li style="text-align: justify;"><strong>&lt;head&gt;</strong> Bagian ini berisi informasi metadata tentang halaman, seperti judul halaman, penghubung ke file CSS, skrip JavaScript, dan informasi lainnya yang tidak ditampilkan langsung di halaman web. Beberapa tag dalam bagian <strong>&lt;head&gt; </strong>meliputi:</li>
-    <ol>
-      <li><strong>&lt;title&gt; </strong>Menentukan judul halaman yang muncul di tab browser.</li>
-      <li><strong>&lt;meta&gt;</strong> yaitu Memberikan informasi tentang karakter encoding atau deskripsi halaman. &lt;meta&gt; terdiri : <ul>
-        <li><strong>&lt;meta charset="UTF-8"&gt; : </strong>Mengatur encoding karakter (UTF-8 mendukung semua bahasa).</li>
-        <li><strong>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt; : </strong>Mengatur responsivitas pada perangkat yang berbeda.</li>
-        <li><strong>&lt;meta name="description" content="..."&gt; : </strong>Menyediakan deskripsi halaman untuk SEO.</li>
-      </ul></li>
-      <li><strong>&lt;link&gt;</strong> Menghubungkan file eksternal, seperti file CSS.</li>
-      <li><strong>&lt;script&gt;</strong> Menyisipkan kode JavaScript</li>
-    </ol>
-    <li style="text-align: justify;"><strong>&lt;body&gt;</strong> Bagian ini berisi konten yang akan ditampilkan di halaman web. Semua elemen yang terlihat oleh pengguna berada di dalam elemen &lt;body&gt;, seperti teks, gambar, tabel, dan formulir. Struktur Konten dalam <strong>&lt;body&gt;</strong> ada berbagai elemen yang dapat digunakan untuk menyusun konten halaman. <br> 
-      </li>
-  </ul>
-  </section>
-  
-  <section>
-    <h1>Elemen Heading dan Teks</h1>
-    <ol>Beberapa elemen dasar yang sering digunakan 
-      <li><strong>&lt;h1&gt;</strong><strong> hingga &lt;h6&gt; : </strong>Untuk membuat heading (judul), dari yang paling penting &lt;h1&gt; hingga &lt;h6&gt;.</li>
-      <li><strong>&lt;p&gt;</strong> Digunakan untuk membuat paragraf.</li>
-      <li><strong>&lt;br&gt; : </strong>Menambahkan baris baru di dalam teks.</li>
-      <li><strong>&lt;hr&gt; : </strong>Menyisipkan garis horizontal sebagai pemisah.</li>
-      <li><strong>&lt;strong&gt; : </strong>untuk teks yang penting (dicetak tebal)</li>
-      <li><strong>&lt;em&gt; : </strong>untuk teks yang diberi penekanan (dicetak miring).</li>
-    </ol>
-  </section>
-  
-  <section>
-    <h1>Elemen Link dan Gambar</h1>
-    <ol>
-      <li><strong>&lt;a&gt; : </strong> Membuat tautan ke halaman lain atau lokasi tertentu. Contoh:<br>&lt;a href="https://example.com"&gt;Tautan&lt;a/&gt;</li>
-      <li><strong>&lt;img&gt; : </strong>Menyisipkan gambar. Contoh : <br><strong>&lt;img src="image.jpg" alt="Deskripsi Gambar"&gt;</strong></li>
-    </ol>
-  </section>
-  
-  <section>
-    <h1>Elemen Daftar</h1>
-    <div class="code">
-      <div class="header"><button class="btn-copy" onclick="copyCode()">Copy</button><span>HTML<span></div>
-        <pre id="code-block">
-    <code>&lt;ol&gt;
-      &lt;li&gt;item 1&lt;/li&gt;<br>    &lt;li&gt;item 2&lt;/li&gt;
-    &lt;/ol&gt;</code>
-        </pre>
-    </div>
-    <li><strong>&lt;ol&gt;</strong>Membuat daftar berurutan (numbered list).</li>
-      </div>
-    <div class="code">
-      <div class="header"><button class="btn-copy" onclick="copyCode()">Copy</button><span>HTML<span></div>
-        <pre id="code-block">
-      <code>&lt;ul&gt;
-        &lt;li&gt;item 1&lt;/li&gt;<br>    &lt;li&gt;item 2&lt;/li&gt;
-      &lt;/ul&gt;
-      </code>
-        </pre>
-    </div>
-    <li><strong>&lt;ul&gt;</strong>Membuat daftar tidak berurutan (bullet list).</li>
-      </div>
-      <li>  <strong>&lt;li&gt; : </strong>Elemen untuk setiap item dalam daftar.</li>
-  </section>
-  
-  <section>
-    <h1>Elemen Formulir</h1>
-    <li><strong>&lt;from&gt; : </strong>Membuat formulir untuk input pengguna.</li>
-    <li><strong>&lt;input&gt; : </strong>Elemen input (teks, tombol, dll).
-      <div class="code">
-        <div class="header"><button class="btn-copy" onclick="copyCode()">Copy</button><span>HTML<span></div>
-          <pre id="code-block">
-            <code>
-    Contoh : &lt;input type="text" placeholder="Nama Anda"&gt;</li>
-            </code>
-          </pre>
-      </div>
-        </div>
-    <li><strong>&lt;textarea&gt; : </strong>Membuat area teks multi-baris.</li>
-    <li><strong>&lt;button&gt; : </strong>Membuat tombol.</li>
-    <li><strong>&lt;label&gt; : </strong>Memberikan label untuk elemen input.</li>
-  </section>
-  
-  <section>
-    <h1>Elemen Struktur Halaman</h1>
-    <ul>
-      <li><strong>&lt;header&gt; : </strong>Bagian atas halaman, seperti logo atau menu navigasi.</li>
-      <li><strong>&lt;nav&gt; : </strong>Menyimpan tautan navigasi</li>
-      <li><strong>&lt;main&gt; : </strong>Bagian utama konten halaman.</li>
-      <li><strong>&lt;section&gt; : </strong>Membagi konten ke dalam bagian tematik.
-      </li>
-      <li><strong>&lt;article&gt; : </strong>Menyimpan konten mandiri, seperti artikel atau postingan.
-      </li>
-      <li><strong>&lt;aside&gt; : </strong>Konten tambahan, seperti sidebar atau catatan.</li>
-      <li><strong>&lt;footer&gt; : </strong>Bagian bawah halaman, seperti hak cipta atau informasi kontak.</li>
-    </ul>
-  </section>
-  
-  <section>
-    <h1>Elemen Multimedia</h1>
-    <li><strong>&lt;audio&gt; : </strong>Menyisipkan audio.
-      Contoh</li>
-    <div class="code">
-      <div class="header"><button class="btn-copy" onclick="copyCode()">Copy</button><span>HTML<span></div>
-        <pre id="code-block">
-          <code>
-  &lt;audio controls&gt;
-    &lt;source src="audio.mp3" type="audio/mpeg"&gt;
-  &lt;/audio&gt;
-          </code>
-        </pre>
-    </div>
-      </div>
-  </section>
-  
-  <section>
-    <li><strong>&lt;vidio&gt; : </strong>Menyisipkan vidio. Contoh</li>
-    <div class="code">
-      <div class="header"><button class="btn-copy" onclick="copyCode()">Copy</button><span>HTML<span></div>
-        <pre id="code-block">
-          <code>
-  &lt;video controls&gt;
-    &lt;source src="video.mp4" type="video/mp4"&gt;
-  &lt;/video&gt;
-          </code>
-        </pre>
-    </div>
-      </div>
-  </section>
-  
+
+        /* Container Utama */
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            background: #007bff;
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        /* Blok Kode */
+        .code {
+            background: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .code pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 14px;
+        }
+
+        .btn-copy {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 8px;
+            font-size: 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-copy:hover {
+            background-color: #0056b3;
+        }
+
+        /* Tabel */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        
+                table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* Mode Gelap */
+        .dark-mode {
+            background-color: #222;
+            color: white;
+        }
+
+        .dark-mode .container {
+            background-color: #333;
+            color: white;
+        }
+
+        .dark-mode h3 {
+            background: #0056b3;
+        }
+
+        .dark-mode .code {
+            background: #444;
+            border-color: #666;
+        }
+
+        .toggle-dark {
+            margin: 10px auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .toggle-dark button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-dark button:hover {
+            background: #0056b3;
+        }
+
+        /* Responsif */
+        @media (max-width: 480px) {
+            .container {
+                width: 100%;
+                padding: 15px;
+            }
+
+            th, td {
+                font-size: 12px;
+                padding: 6px;
+            }
+
+            .btn-copy {
+                font-size: 10px;
+                padding: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="toggle-dark">
+    <button onclick="toggleDarkMode()">🌙 Mode Gelap</button>
+</div>
+
+<div class="container">
+    <h2>Belajar HTML & CSS</h2>
+
     <section>
-    <h1>Elemen Interaktif</h1>
-      <li><strong>&lt;script&gt; : </strong>Menyisipkan atau menghubungkan file JavaScript.</li>
-      <li><strong>&lt;details&gt; : </strong>Menyisipkan detail yang dapat diperluas (expandable).</li>
-      <li><strong>&lt;summary&gt; : </strong>Memberikan ringkasan untuk elemen &lt;summary&gt;.</li>
-    </section>
-  
-    <section id="elemen-html">
-      <h1>Elemen Khusus</h1>
-      <li><strong>&lt;table&gt; : </strong>Membuat tabel data.
-        Contoh</li>
-      <div class="code">
-        <div class="header"><button class="btn-copy" onclick="copyCode()">Copy</button><span>HTML<span></div>
-          <pre id="code-block">
-            <code>
-      &lt;table&gt;
-        &lt;tr&gt;
-            &lt;th&gt;Judul Kolom&lt;/th&gt;
-        &lt;/tr&gt;
-        &lt;tr&gt;
-            &lt;td&gt;Data&lt;/td&gt;
-        &lt;/tr&gt;
-      &lt;/table&gt;
-            </code>
-          </pre>
-      </div>
+        <h4>HTML (HyperText Markup Language) adalah bahasa markup untuk membuat halaman web. HTML menggunakan tag untuk menandai elemen-elemen dalam halaman web.</h4>
+        <h3> Struktur Daftar</h3>
+        <div class="code">
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="id"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Belajar HTML&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Halo, Dunia!&lt;/h1&gt;
+    &lt;p&gt;Ini adalah paragraf pertama saya.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
         </div>
-        <li><strong>&lt;div&gt; : </strong>Elemen pembungkus serbaguna untuk mengelompokkan konten.</li>
-        <li><strong>&lt;span&gt; : </strong>Membungkus teks untuk styling tertentu.</li>
     </section>
-  </main>
-  <footer>
-    &copy; 2025 new Panduan Belajar HTML Lengkap
-  </footer>
-  </body>
+    <section>
+            <h3>Elemen Dasar HTML</h3>
+    <table>
+        <tr>
+            <th>Tag</th>
+            <th>Fungsi</th>
+        </tr>
+        <tr>
+            <td>&lt;h1&gt; sampai &lt;h6&gt;</td>
+            <td>Heading (judul) dari besar ke kecil</td>
+        </tr>
+        <tr>
+            <td>&lt;p&gt;</td>
+            <td>Paragraf</td>
+        </tr>
+        <tr>
+            <td>&lt;a href="url"&gt;</td>
+            <td>Link (tautan)</td>
+        </tr>
+        <tr>
+            <td>&lt;img src="gambar.jpg" alt="deskripsi"&gt;</td>
+            <td>Gambar</td>
+        </tr>
+        <tr>
+            <td>&lt;ul&gt; / &lt;ol&gt; / &lt;li&gt;</td>
+            <td>Daftar (bullet & numbering)</td>
+        </tr>
+        <tr>
+            <td>&lt;table&gt; / &lt;tr&gt; / &lt;td&gt;</td>
+            <td>Tabel</td>
+        </tr>
+        <tr>
+            <td>&lt;form&gt;</td>
+            <td>Formulir input pengguna</td>
+        </tr>
+    </table>
+    </section>
+    
+    <section>
+                <h3>Contoh</h3>
+        <div class="code">
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            <pre><code>&lt;h2&gt;Judul Subbab&lt;/h2&gt;
+&lt;p&gt;Ini adalah paragraf dengan &lt;strong&gt;teks tebal&lt;/strong&gt; dan &lt;em&gt;teks miring&lt;/em&gt;.&lt;/p&gt;
+&lt;a href="https://www.google.com"&gt;Klik di sini untuk ke Google&lt;/a&gt;
+&lt;img src="gambar.jpg" alt="Deskripsi Gambar"&gt;</code></pre>
+        </div>
+    </section>
+    
+        <section>
+                <h3>List dalam HTML</h3>
+                <ol>
+                    <li>Unordered List (Daftar Tidak Berurut)</li>
+                </ol>
+        <div class="code">
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            <pre><code>&lt;ul&gt;
+    &lt;li&gt;Apel&lt;/li&gt;
+    &lt;li&gt;Pisang&lt;/li&gt;
+    &lt;li&gt;Jeruk&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+        </div>
+                <ol>
+                    <li>. Ordered List (Daftar Berurut)</li>
+                </ol>
+        <div class="code">
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            <pre><code>&lt;ol&gt;
+    &lt;li&gt;Apel&lt;/li&gt;
+    &lt;li&gt;Pisang&lt;/li&gt;
+    &lt;li&gt;Jeruk&lt;/li&gt;
+&lt;/ol&gt;</code></pre>
+        </div>
+    </section>
+
+    <section>
+        <h3>Gambar & Link dalam HTML</h3>
+        <ol>
+            <li><h4>Menampilkan Gambar</h4></li>
+        </ol>
+        <div class="code">
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            <pre><code>&lt;img src="https://via.placeholder.com/150" alt="Gambar Contoh"&gt;</code></pre>
+        </div>
+        <ol>
+            <li><h4>Membuat Link</h4></li>
+        </ol>
+        <div class="code">
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            <pre><code>&lt;a href="https://www.example.com" target="_blank"&gt;Kunjungi Situs&lt;/a&gt;</code></pre>
+        </div>
+    </section>
+
+    <section>
+            <h3>Formulir HTML</h3>
+        <div class="code">
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            <pre><code>        &lt;form action="proses.php" method="post"&gt;
+    &lt;label for="nama"&gt;Nama:&lt;/label&gt;
+    &lt;input type="text" id="nama" name="nama"&gt;&lt;br&gt;
+
+    &lt;label for="email"&gt;Email:&lt;/label&gt;
+    &lt;input type="email" id="email" name="email"&gt;&lt;br&gt;
+
+    &lt;label for="pesan"&gt;Pesan:&lt;/label&gt;
+    &lt;textarea id="pesan" name="pesan"&gt;&lt;/textarea&gt;&lt;br&gt;
+
+    &lt;input type="submit" value="Kirim"&gt;
+&lt;/form&gt;</code></pre>
+        </div>
+    </section>
+    
+    <section>
+                <h3>Tabel dalam HTML</h3>
+        <div class="code">
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            <pre><code>&lt;table border="1"&gt;
+    &lt;tr&gt;
+        &lt;th&gt;Nama&lt;/th&gt;
+        &lt;th&gt;Umur&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;Putut&lt;/td&gt;
+        &lt;td&gt;25&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;Budi&lt;/td&gt;
+        &lt;td&gt;30&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;</code></pre>
+        </div>
+    </section>
+    
+                <h3>CSS Dasar untuk HTML</h3>
+
+        <div class="code">
+
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            <pre><code>&lt;style&gt;
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+    }
+    h1 {
+        color: blue;
+    }
+    p {
+        color: green;
+    }
+&lt;/style&gt;</code></pre>
+        </div>
+
+    <section>
+        <h3>Elemen Tabel</h3>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Judul Kolom</th>
+                </tr>
+                <tr>
+                    <td>Data</td>
+                </tr>
+            </table>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <p style="text-align: center; padding: 10px;">&copy; 2025 Panduan HTML Interaktif</p>
+</footer>
+
+<script>
+    function copyCode(button) {
+        const codeBlock = button.nextElementSibling.textContent;
+        navigator.clipboard.writeText(codeBlock).then(() => {
+            button.textContent = "✔ Disalin!";
+            setTimeout(() => button.textContent = "Copy", 2000);
+        }).catch(err => console.error("Gagal menyalin:", err));
+    }
+
+    function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+    }
+</script>
+</body>
+
+
+
+    <style>
+
+    </style>
+</head>
+
+
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .code-container {
+            background: #282c34;
+            color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            position: relative;
+            overflow: auto;
+            max-width: 100%;
+        }
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .btn {
+            background: #61dafb;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 14px;
+            color: #000;
+            margin-left: 5px;
+        }
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        code {
+            display: block;
+            color: #abb2bf;
+        }
+    </style>
+</head>
+<body>
+    <div class="code-container">
+        <div class="code-header">
+            <span>HTML Code</span>
+            <div>
+                <button class="btn" onclick="copyCode()">Copy</button>
+                <button class="btn" onclick="openPreview()">Preview</button>
+            </div>
+        </div>
+        <pre><code id="code-snippet">&lt;!DOCTYPE html&gt;
+&lt;html lang="id"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Website Sederhana&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: Arial, sans-serif; }
+        .container { width: 80%; margin: auto; }
+        header, footer { background: #333; color: white; text-align: center; padding: 10px; }
+        nav { background: #666; padding: 10px; }
+        nav a { color: white; margin: 10px; text-decoration: none; }
+        .content { padding: 20px; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;header&gt;
+        &lt;h1&gt;Selamat Datang&lt;/h1&gt;
+    &lt;/header&gt;
+
+    &lt;nav&gt;
+        &lt;a href="#"&gt;Home&lt;/a&gt;
+        &lt;a href="#"&gt;Tentang&lt;/a&gt;
+        &lt;a href="#"&gt;Kontak&lt;/a&gt;
+    &lt;/nav&gt;
+
+    &lt;div class="container"&gt;
+        &lt;div class="content"&gt;
+            &lt;h2&gt;Judul Artikel&lt;/h2&gt;
+            &lt;p&gt;Ini adalah contoh artikel sederhana.&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;footer&gt;
+        &lt;p&gt;&copy; 2025 Belajar HTML&lt;/p&gt;
+    &lt;/footer&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+        </code></pre>
+    </div>
+    
+    <script>
+        function decodeHTML(html) {
+            let txt = document.createElement("textarea");
+            txt.innerHTML = html;
+            return txt.value;
+        }
+
+        function copyCode() {
+            const code = document.getElementById("code-snippet").textContent;
+            navigator.clipboard.writeText(decodeHTML(code)).then(() => {
+                alert("Kode berhasil disalin!");
+            });
+        }
+        
+        function openPreview() {
+            const code = document.getElementById("code-snippet").textContent;
+            const decodedCode = decodeHTML(code);
+            const newWindow = window.open("", "_blank");
+            newWindow.document.write(`<!DOCTYPE html><html lang='id'><head><title>Preview</title></head><body>${decodedCode}</body></html>`);
+            newWindow.document.close();
+        }
+    </script>
+</body>
