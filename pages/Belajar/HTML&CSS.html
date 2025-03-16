@@ -51,25 +51,62 @@
             padding: 0;
             box-sizing: border-box;
         }
-      body {
+        body {
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
-        background-color: #f4f4f4;
+        background-color: rgb(219, 199, 199);
         display: flex;
         flex-direction: column;
         align-items: center;
         margin-left: 80px;
-      }
+        }
 
         /* Container Utama */
         .container {
             width: 90%;
             max-width: 800px;
-            background: white;
+            background: #ffffff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .code-container {
+            background: #444;
+            padding: 10px;
+            border: 1px solid #666;
+            border-radius: 5px;
+            margin-top: 10px;
+            position: relative;
+        }
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .btn {
+            background: #007bff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 14px;
+            color: #ffffff;
+            margin-left: 5px;
+        }
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        code {
+            display: block;
+            color: #ffffff;
+            border: #000000;
+
         }
 
         h2 {
@@ -101,9 +138,9 @@
 
         /* Blok Kode */
         .code {
-            background: #f9f9f9;
+            background: #666;
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid #000000;
             border-radius: 5px;
             margin-top: 10px;
             position: relative;
@@ -153,7 +190,7 @@
 
         th {
             background-color: #007bff;
-            color: white;
+            color: rgb(0, 0, 0);
         }
         
                 table {
@@ -237,9 +274,12 @@
 
 <div class="container">
     <h2>Belajar HTML & CSS</h2>
+    <section>
+        <h3>Pengertian HTML</h3>
+        <p style="text-align: justify;text-indent: 2em;">HTML (HyperText Markup Language) adalah bahasa markup untuk membuat halaman web. HTML menggunakan tag untuk menandai elemen-elemen dalam halaman web.</p>
+    </section>
 
     <section>
-        <h4>HTML (HyperText Markup Language) adalah bahasa markup untuk membuat halaman web. HTML menggunakan tag untuk menandai elemen-elemen dalam halaman web.</h4>
         <h3> Struktur Daftar</h3>
         <div class="code">
             <button class="btn-copy" onclick="copyCode(this)">Copy</button>
@@ -390,10 +430,9 @@
         </div>
     </section>
     
-                <h3>CSS Dasar untuk HTML</h3>
-
+    <section>
+    <h3>CSS Dasar untuk HTML</h3>
         <div class="code">
-
             <button class="btn-copy" onclick="copyCode(this)">Copy</button>
             <pre><code>&lt;style&gt;
     body {
@@ -408,6 +447,61 @@
     }
 &lt;/style&gt;</code></pre>
         </div>
+    </section>
+
+    <section>
+        <h3>Layout Sederhana</h3>
+        <div class="code-container">
+            <div class="code-header">
+                <span>HTML Code</span>
+                <div>
+                    <button class="btn" onclick="copyCode()">Copy</button>
+                    <button class="btn" onclick="openPreview()">Preview</button>
+                </div>
+            </div>
+            <pre><code id="code-snippet">&lt;!DOCTYPE html&gt;
+    &lt;html lang="id"&gt;
+    &lt;head&gt;
+        &lt;meta charset="UTF-8"&gt;
+        &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+        &lt;title&gt;Website Sederhana&lt;/title&gt;
+        &lt;style&gt;
+            body { font-family: Arial, sans-serif; }
+            .container { width: 80%; margin: auto; }
+            header, footer { background: #333; color: white; text-align: center; padding: 10px; }
+            nav { background: #666; padding: 10px; }
+            nav a { color: white; margin: 10px; text-decoration: none; }
+            .content { padding: 20px; }
+        &lt;/style&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+    
+        &lt;header&gt;
+            &lt;h1&gt;Selamat Datang&lt;/h1&gt;
+        &lt;/header&gt;
+    
+        &lt;nav&gt;
+            &lt;a href="#"&gt;Home&lt;/a&gt;
+            &lt;a href="#"&gt;Tentang&lt;/a&gt;
+            &lt;a href="#"&gt;Kontak&lt;/a&gt;
+        &lt;/nav&gt;
+    
+        &lt;div class="container"&gt;
+            &lt;div class="content"&gt;
+                &lt;h2&gt;Judul Artikel&lt;/h2&gt;
+                &lt;p&gt;Ini adalah contoh artikel sederhana.&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    
+        &lt;footer&gt;
+            &lt;p&gt;&copy; 2025 Belajar HTML&lt;/p&gt;
+        &lt;/footer&gt;
+    
+    &lt;/body&gt;
+    &lt;/html&gt;
+            </code></pre>
+        </div>
+    </section>
 
     <section>
         <h3>Elemen Tabel</h3>
@@ -440,115 +534,8 @@
     function toggleDarkMode() {
         document.body.classList.toggle("dark-mode");
     }
-</script>
-</body>
 
-
-
-    <style>
-
-    </style>
-</head>
-
-
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            padding: 20px;
-        }
-        .code-container {
-            background: #282c34;
-            color: #fff;
-            padding: 15px;
-            border-radius: 5px;
-            font-family: monospace;
-            position: relative;
-            overflow: auto;
-            max-width: 100%;
-        }
-        .code-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-        .btn {
-            background: #61dafb;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 3px;
-            font-size: 14px;
-            color: #000;
-            margin-left: 5px;
-        }
-        pre {
-            margin: 0;
-            white-space: pre-wrap;
-        }
-        code {
-            display: block;
-            color: #abb2bf;
-        }
-    </style>
-</head>
-<body>
-    <div class="code-container">
-        <div class="code-header">
-            <span>HTML Code</span>
-            <div>
-                <button class="btn" onclick="copyCode()">Copy</button>
-                <button class="btn" onclick="openPreview()">Preview</button>
-            </div>
-        </div>
-        <pre><code id="code-snippet">&lt;!DOCTYPE html&gt;
-&lt;html lang="id"&gt;
-&lt;head&gt;
-    &lt;meta charset="UTF-8"&gt;
-    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
-    &lt;title&gt;Website Sederhana&lt;/title&gt;
-    &lt;style&gt;
-        body { font-family: Arial, sans-serif; }
-        .container { width: 80%; margin: auto; }
-        header, footer { background: #333; color: white; text-align: center; padding: 10px; }
-        nav { background: #666; padding: 10px; }
-        nav a { color: white; margin: 10px; text-decoration: none; }
-        .content { padding: 20px; }
-    &lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
-
-    &lt;header&gt;
-        &lt;h1&gt;Selamat Datang&lt;/h1&gt;
-    &lt;/header&gt;
-
-    &lt;nav&gt;
-        &lt;a href="#"&gt;Home&lt;/a&gt;
-        &lt;a href="#"&gt;Tentang&lt;/a&gt;
-        &lt;a href="#"&gt;Kontak&lt;/a&gt;
-    &lt;/nav&gt;
-
-    &lt;div class="container"&gt;
-        &lt;div class="content"&gt;
-            &lt;h2&gt;Judul Artikel&lt;/h2&gt;
-            &lt;p&gt;Ini adalah contoh artikel sederhana.&lt;/p&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-
-    &lt;footer&gt;
-        &lt;p&gt;&copy; 2025 Belajar HTML&lt;/p&gt;
-    &lt;/footer&gt;
-
-&lt;/body&gt;
-&lt;/html&gt;
-        </code></pre>
-    </div>
-    
-    <script>
-        function decodeHTML(html) {
+    function decodeHTML(html) {
             let txt = document.createElement("textarea");
             txt.innerHTML = html;
             return txt.value;
@@ -568,5 +555,6 @@
             newWindow.document.write(`<!DOCTYPE html><html lang='id'><head><title>Preview</title></head><body>${decodedCode}</body></html>`);
             newWindow.document.close();
         }
-    </script>
+</script>
 </body>
+
