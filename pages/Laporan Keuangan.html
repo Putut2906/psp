@@ -321,3 +321,139 @@ th {
         updateTable();
     </script>
 </body>
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+        display: flex;
+    }
+    .container {
+        flex: 1;
+        margin-left: 80px;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+        text-align: center;
+    }
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 10px;
+    }
+    .input-group label {
+        font-size: 14px;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    .input-group input,
+    .input-group select {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        width: 100%;
+    }
+    .button-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .button-group button {
+        flex: 1;
+        padding: 10px;
+        font-size: 14px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        color: white;
+    }
+    #addTransaction {
+        background-color: #28a745;
+    }
+    #deleteLastRow {
+        background-color: #dc3545;
+    }
+    #savePdfButton {
+        background-color: #007bff;
+    }
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+    th,
+    td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: center;
+        font-size: 14px;
+    }
+    th {
+        background-color: #007bff;
+        color: white;
+    }
+    @media (max-width: 480px) {
+        .container {
+            width: 90%;
+            padding: 10px;
+        }
+        th,
+        td {
+            font-size: 12px;
+            padding: 6px;
+        }
+        .button-group button {
+            font-size: 12px;
+            padding: 8px;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>Jurnal Transaksi</h2>
+    <div class="input-group">
+        <label>Tanggal: <input type="date" id="tanggal"></label>
+        <label>Keterangan: <input type="text" id="keterangan"></label>
+        <label>Jenis:
+            <select id="jenis">
+                <option value="Debit">Debit</option>
+                <option value="Kredit">Kredit</option>
+            </select>
+        </label>
+        <label>Jumlah (Rp): <input type="number" id="jumlah"></label>
+    </div>
+    <div class="button-group">
+        <button id="addTransaction" onclick="tambahTransaksi()">Tambah Transaksi</button>
+        <button id="deleteLastRow" onclick="hapusTransaksiTerakhir()">Hapus Transaksi Terakhir</button>
+        <button id="savePdfButton" onclick="simpanPDF()">Simpan sebagai PDF</button>
+    </div>
+    <div class="table-container">
+        <table id="tabelTransaksi">
+            <tr>
+                <th>Tanggal</th>
+                <th>Keterangan</th>
+                <th>Debit (Rp)</th>
+                <th>Kredit (Rp)</th>
+            </tr>
+            <tr class="total">
+                <td colspan="2">Total</td>
+                <td id="totalDebit">0</td>
+                <td id="totalKredit">0</td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
