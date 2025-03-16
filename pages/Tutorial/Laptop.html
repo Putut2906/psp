@@ -3,11 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <title>Singghara</title>
-    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="https://putut2906.github.io/psp/style.css" />
     <link
       href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
       rel="stylesheet"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
   <body>
@@ -34,7 +35,7 @@
       }
 
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/sidebar.html")
+        fetch("https://putut2906.github.io/psp/sidebar.html")
           .then((response) => response.text())
           .then((data) => {
             document.getElementById("sidebar-container").innerHTML = data;
@@ -43,4 +44,1598 @@
       });
     </script>
   </body>
+</html>
+
+
+    <style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 80px;
+}
+
+.container {
+    width: 90%;
+    max-width: 800px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+h2 {
+    text-align: center;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.input-group label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.input-group input,
+.input-group select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.button-group button {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+}
+
+#addTransaction { background-color: #28a745; }
+#deleteLastRow { background-color: #dc3545; }
+#savePdfButton { background-color: #007bff; }
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: center;
+    font-size: 14px;
+}
+
+th {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Responsif untuk layar lebih kecil */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .button-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .button-group button {
+        width: 100%;
+    }
+
+    th, td {
+        font-size: 12px;
+        padding: 6px;
+    }
+}
+
+/* Responsif untuk layar sangat kecil */
+@media (max-width: 480px) {
+    th, td {
+        font-size: 11px;
+        padding: 5px;
+    }
+
+    .input-group input,
+    .input-group select {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    .button-group button {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="text-align: center;">Laporan Keuangan</h2>
+        <div class="input-group">
+            <label for="date">Tanggal:</label>
+            <input type="date" id="date">
+        </div>
+        <div class="input-group">
+            <label for="description">Keterangan:</label>
+            <input type="text" id="description" placeholder="Masukkan keterangan">
+        </div>
+        <div class="input-group">
+            <label for="type">Jenis:</label>
+            <select id="type">
+                <option value="income">Pemasukan</option>
+                <option value="expense">Pengeluaran</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label for="amount">Jumlah (Rp):</label>
+            <input type="number" id="amount" placeholder="Masukkan jumlah">
+        </div>
+        <div class="button-group">
+            <button id="addTransaction">Tambah Transaksi</button>
+            <button id="deleteLastRow">Hapus Baris Terakhir</button>
+            <button id="savePdfButton">Simpan PDF</button>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Keterangan</th>
+                        <th>Pemasukan (Rp)</th>
+                        <th>Pengeluaran (Rp)</th>
+                        <th>Saldo (Rp)</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionTable"></tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+        const transactionTable = document.getElementById("transactionTable");
+
+        function formatDate(dateStr) {
+    const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", 
+                    "Agustus", "September", "Oktober", "November", "Desember"];
+    const dateObj = new Date(dateStr);
+    return `${dateObj.getDate()} ${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
+}
+        function updateTable() {
+            transactionTable.innerHTML = "";
+            let balance = 0;
+            transactions.forEach((t, index) => {
+                balance += t.type === "income" ? t.amount : -t.amount;
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${t.date}</td>
+                    <td>${t.description}</td>
+                    <td>${t.type === "income" ? t.amount.toLocaleString() : "-"}</td>
+                    <td>${t.type === "expense" ? t.amount.toLocaleString() : "-"}</td>
+                    <td>${balance.toLocaleString()}</td>
+                `;
+                transactionTable.appendChild(row);
+            });
+            localStorage.setItem("transactions", JSON.stringify(transactions));
+        }
+        document.getElementById("addTransaction").addEventListener("click", () => {
+            const date = document.getElementById("date").value;
+            const description = document.getElementById("description").value;
+            const type = document.getElementById("type").value;
+            const amount = parseFloat(document.getElementById("amount").value);
+            if (!date || !description || isNaN(amount) || amount <= 0) {
+                alert("Mohon isi semua data dengan benar.");
+                return;
+            }
+            transactions.push({ date, description, type, amount });
+            updateTable();
+        });
+        document.getElementById("deleteLastRow").addEventListener("click", () => {
+            if (transactions.length > 0) {
+                transactions.pop();
+                updateTable();
+            } else {
+                alert("Tidak ada data untuk dihapus.");
+            }
+        });
+        document.getElementById("savePdfButton").addEventListener("click", () => {
+            if (transactions.length === 0) {
+                alert("Tidak ada data transaksi untuk disimpan!");
+                return;
+            }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(16);
+            doc.text("Laporan Keuangan Harian", 14, 10);
+            const tableColumn = ["Tanggal", "Keterangan", "Pemasukan (Rp)", "Pengeluaran (Rp)", "Saldo (Rp)"];
+            const tableRows = [];
+            let balance = 0;
+            transactions.forEach((t) => {
+                balance += t.type === "income" ? t.amount : -t.amount;
+                tableRows.push([t.date, t.description, t.type === "income" ? t.amount.toLocaleString() : "-", t.type === "expense" ? t.amount.toLocaleString() : "-", balance.toLocaleString()]);
+            });
+          doc.autoTable({
+    head: [tableColumn],
+    body: tableRows,
+    startY: 20,
+    styles: { 
+        lineWidth: 0.5,  // Ketebalan garis border
+        lineColor: [0, 0, 0],  // Warna border hitam
+        fontSize: 10  // Ukuran font tabel
+    },
+    headStyles: { 
+        fillColor: [0, 102, 204],  // Warna header biru
+        textColor: [255, 255, 255],  // Warna teks header putih
+        fontStyle: 'bold',
+        lineWidth: 0.5,
+        lineColor: [0, 0, 0]
+    },
+    bodyStyles: { 
+        textColor: [0, 0, 0],  // Warna teks default hitam
+        lineWidth: 0.5,
+        lineColor: [0, 0, 0]
+    },
+    columnStyles: {
+        2: { textColor: [0, 150, 0] }, // Warna hijau untuk Pemasukan
+        3: { textColor: [200, 0, 0] }, // Warna merah untuk Pengeluaran
+        4: { fontStyle: 'bold' } // Saldo tebal
+    },
+    tableLineColor: [0, 0, 0],  
+    tableLineWidth: 0.5  
+});
+            doc.save("Laporan_Keuangan.pdf");
+        });
+        updateTable();
+    </script>
+</body>
+
+
+
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jurnal Transaksi</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+        }
+        .container {
+            flex: 1;
+            margin-left: 80px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+        .input-group label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .input-group input,
+        .input-group select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 100%;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .button-group button {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+        #addTransaction {
+            background-color: #28a745;
+        }
+        #deleteLastRow {
+            background-color: #dc3545;
+        }
+        #savePdfButton {
+            background-color: #007bff;
+        }
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        @media (max-width: 480px) {
+            .container {
+                width: 90%;
+                padding: 10px;
+            }
+            th, td {
+                font-size: 12px;
+                padding: 6px;
+            }
+            .button-group button {
+                font-size: 12px;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Jurnal Transaksi</h2>
+        <div class="input-group">
+            <label>Tanggal: <input type="date" id="tanggal"></label>
+            <label>Keterangan: <input type="text" id="keterangan"></label>
+            <label>Jenis:
+                <select id="jenis">
+                    <option value="Debit">Debit</option>
+                    <option value="Kredit">Kredit</option>
+                </select>
+            </label>
+            <label>Jumlah (Rp): <input type="number" id="jumlah"></label>
+        </div>
+        <div class="button-group">
+            <button id="addTransaction" onclick="tambahTransaksi()">Tambah Transaksi</button>
+            <button id="deleteLastRow" onclick="hapusTransaksiTerakhir()">Hapus Transaksi Terakhir</button>
+            <button id="savePdfButton" onclick="simpanPDF()">Simpan sebagai PDF</button>
+        </div>
+        <div class="table-container">
+            <table id="tabelTransaksi">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Keterangan</th>
+                        <th>Debit (Rp)</th>
+                        <th>Kredit (Rp)</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyTransaksi">
+                </tbody>
+                <tfoot>
+                    <tr class="total">
+                        <td colspan="2">Total</td>
+                        <td id="totalDebit">0</td>
+                        <td id="totalKredit">0</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Memuat data dari LocalStorage saat halaman dibuka
+        document.addEventListener("DOMContentLoaded", function() {
+            if (localStorage.getItem("transaksi")) {
+                document.getElementById("tbodyTransaksi").innerHTML = localStorage.getItem("transaksi");
+                hitungTotal();
+            }
+        });
+
+        function tambahTransaksi() {
+            let tanggal = document.getElementById("tanggal").value;
+            let keterangan = document.getElementById("keterangan").value;
+            let jenis = document.getElementById("jenis").value;
+            let jumlah = document.getElementById("jumlah").value;
+
+            if (tanggal === "" || keterangan === "" || jumlah === "") {
+                alert("Semua kolom harus diisi!");
+                return;
+            }
+
+            let tbody = document.getElementById("tbodyTransaksi");
+            let row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${tanggal}</td>
+                <td>${keterangan}</td>
+                <td>${jenis === "Debit" ? jumlah : ""}</td>
+                <td>${jenis === "Kredit" ? jumlah : ""}</td>
+            `;
+
+            tbody.appendChild(row);
+
+            // Simpan ke LocalStorage
+            localStorage.setItem("transaksi", tbody.innerHTML);
+
+            // Hitung total
+            hitungTotal();
+        }
+
+        function hapusTransaksiTerakhir() {
+            let tbody = document.getElementById("tbodyTransaksi");
+            tbody.removeChild(tbody.lastChild);
+
+            // Update LocalStorage
+            localStorage.setItem("transaksi", tbody.innerHTML);
+
+            // Hitung total
+            hitungTotal();
+        }
+
+        function hitungTotal() {
+            let totalDebit = 0;
+            let totalKredit = 0;
+
+            document.querySelectorAll("#tbodyTransaksi tr").forEach(row => {
+                let debit = parseFloat(row.cells[2].textContent) || 0;
+                let kredit = parseFloat(row.cells[3].textContent) || 0;
+                totalDebit += debit;
+                totalKredit += kredit;
+            });
+
+            document.getElementById("totalDebit").textContent = totalDebit;
+            document.getElementById("totalKredit").textContent = totalKredit;
+        }
+
+        function simpanPDF() {
+            const { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+            doc.text("Jurnal Transaksi", 10, 10);
+            
+            // Mengambil data tabel
+            let rows = [];
+            document.querySelectorAll("#tbodyTransaksi tr").forEach(row => {
+                let data = Array.from(row.children).map(cell => cell.textContent);
+                rows.push(data);
+            });
+
+            doc.autoTable({
+                head: [["Tanggal", "Keterangan", "Debit (Rp)", "Kredit (Rp)"]],
+                body: rows
+            });
+
+            doc.save("Jurnal_Transaksi.pdf");
+        }
+    </script>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buku Besar</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+        .input-group label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .input-group input,
+        .input-group select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 100%;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .button-group button {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+        #addTransaction {
+            background-color: #28a745;
+        }
+        #deleteLastRow {
+            background-color: #dc3545;
+        }
+        #savePdf {
+            background-color: #007bff;
+        }
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        .total-row td {
+            font-weight: bold;
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Buku Besar</h2>
+        <div class="input-group">
+            <label>Tanggal: <input type="date" id="tanggal"></label>
+            <label>Keterangan: <input type="text" id="keterangan"></label>
+            <label>Jenis:
+                <select id="jenis">
+                    <option value="Debit">Debit</option>
+                    <option value="Kredit">Kredit</option>
+                </select>
+            </label>
+            <label>Jumlah (Rp): <input type="number" id="jumlah"></label>
+        </div>
+        <div class="button-group">
+            <button id="addTransaction" onclick="tambahTransaksi()">Tambah Transaksi</button>
+            <button id="deleteLastRow" onclick="hapusTransaksiTerakhir()">Hapus Transaksi Terakhir</button>
+            <button id="savePdf" onclick="simpanPDF()">Simpan PDF</button>
+        </div>
+        <div class="table-container">
+            <table id="bukuBesarTable">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Keterangan</th>
+                        <th>Debit (Rp)</th>
+                        <th>Kredit (Rp)</th>
+                        <th>Saldo (Rp)</th>
+                    </tr>
+                </thead>
+                <tbody id="bukuBesarBody">
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="2">Total</td>
+                        <td id="totalDebit">0</td>
+                        <td id="totalKredit">0</td>
+                        <td id="totalSaldo">0</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <script>
+        let saldo = 0;
+
+        function tambahTransaksi() {
+            let tanggal = document.getElementById("tanggal").value;
+            let keterangan = document.getElementById("keterangan").value;
+            let jenis = document.getElementById("jenis").value;
+            let jumlah = parseFloat(document.getElementById("jumlah").value);
+
+            if (tanggal === "" || keterangan === "" || isNaN(jumlah) || jumlah <= 0) {
+                alert("Semua kolom harus diisi dengan benar!");
+                return;
+            }
+
+            let tbody = document.getElementById("bukuBesarBody");
+            let row = document.createElement("tr");
+
+            let debit = jenis === "Debit" ? jumlah : 0;
+            let kredit = jenis === "Kredit" ? jumlah : 0;
+            saldo += debit - kredit;
+
+            row.innerHTML = `
+                <td>${tanggal}</td>
+                <td>${keterangan}</td>
+                <td>${debit ? debit.toLocaleString() : ""}</td>
+                <td>${kredit ? kredit.toLocaleString() : ""}</td>
+                <td>${saldo.toLocaleString()}</td>
+            `;
+
+            tbody.appendChild(row);
+
+            hitungTotal();
+        }
+
+        function hapusTransaksiTerakhir() {
+            let tbody = document.getElementById("bukuBesarBody");
+            if (tbody.children.length > 0) {
+                let lastRow = tbody.lastChild;
+                let debit = parseFloat(lastRow.cells[2].textContent.replace(/,/g, "")) || 0;
+                let kredit = parseFloat(lastRow.cells[3].textContent.replace(/,/g, "")) || 0;
+                saldo -= debit - kredit;
+
+                tbody.removeChild(lastRow);
+                hitungTotal();
+            }
+        }
+
+        function hitungTotal() {
+            let totalDebit = 0;
+            let totalKredit = 0;
+            let saldoAkhir = 0;
+
+            document.querySelectorAll("#bukuBesarBody tr").forEach(row => {
+                let debit = parseFloat(row.cells[2].textContent.replace(/,/g, "")) || 0;
+                let kredit = parseFloat(row.cells[3].textContent.replace(/,/g, "")) || 0;
+                totalDebit += debit;
+                totalKredit += kredit;
+                saldoAkhir += debit - kredit;
+            });
+
+            document.getElementById("totalDebit").textContent = totalDebit.toLocaleString();
+            document.getElementById("totalKredit").textContent = totalKredit.toLocaleString();
+            document.getElementById("totalSaldo").textContent = saldoAkhir.toLocaleString();
+        }
+
+        function simpanPDF() {
+            const { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+            doc.text("Buku Besar", 10, 10);
+
+            let rows = [];
+            document.querySelectorAll("#bukuBesarBody tr").forEach(row => {
+                let data = Array.from(row.children).map(cell => cell.textContent);
+                rows.push(data);
+            });
+
+            doc.autoTable({
+                head: [["Tanggal", "Keterangan", "Debit (Rp)", "Kredit (Rp)", "Saldo (Rp)"]],
+                body: rows
+            });
+
+            doc.save("Buku_Besar.pdf");
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neraca Saldo, Jurnal Penyesuaian, dan Neraca Lajur</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        /* CSS responsif */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+        .input-group label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .input-group input,
+        .input-group select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 100%;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .button-group button {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+        #addTransaction {
+            background-color: #28a745;
+        }
+        #deleteLastRow {
+            background-color: #dc3545;
+        }
+        #savePdf {
+            background-color: #007bff;
+        }
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        .total-row td {
+            font-weight: bold;
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Neraca Saldo, Jurnal Penyesuaian, dan Neraca Lajur</h2>
+
+        <div class="input-group">
+            <label>Akun: <input type="text" id="akun"></label>
+            <label>Jenis:
+                <select id="jenis">
+                    <option value="Debit">Debit</option>
+                    <option value="Kredit">Kredit</option>
+                </select>
+            </label>
+            <label>Jumlah (Rp): <input type="number" id="jumlah"></label>
+        </div>
+
+        <div class="button-group">
+            <button id="addTransaction" onclick="tambahTransaksi()">Tambah Data</button>
+            <button id="deleteLastRow" onclick="hapusTransaksiTerakhir()">Hapus Data Terakhir</button>
+            <button id="savePdf" onclick="simpanPDF()">Simpan PDF</button>
+        </div>
+
+        <div class="table-container">
+            <table id="tabelNeraca">
+                <tr>
+                    <th>Akun</th>
+                    <th>Debit (Rp)</th>
+                    <th>Kredit (Rp)</th>
+                </tr>
+                <tbody id="badanTabel"></tbody>
+                <tr class="total-row">
+                    <td>Total</td>
+                    <td id="totalDebit">0</td>
+                    <td id="totalKredit">0</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let dataTransaksi = JSON.parse(localStorage.getItem("dataNeraca")) || [];
+
+        function simpanKeLocalStorage() {
+            localStorage.setItem("dataNeraca", JSON.stringify(dataTransaksi));
+        }
+
+        function tambahTransaksi() {
+            let akun = document.getElementById("akun").value;
+            let jenis = document.getElementById("jenis").value;
+            let jumlah = parseFloat(document.getElementById("jumlah").value);
+
+            if (!akun || isNaN(jumlah)) {
+                alert("Harap isi semua kolom dengan benar.");
+                return;
+            }
+
+            dataTransaksi.push({ akun, jenis, jumlah });
+            simpanKeLocalStorage();
+            perbaruiTabel();
+        }
+
+        function hapusTransaksiTerakhir() {
+            if (dataTransaksi.length > 0) {
+                dataTransaksi.pop();
+                simpanKeLocalStorage();
+                perbaruiTabel();
+            } else {
+                alert("Tidak ada data untuk dihapus.");
+            }
+        }
+
+        function perbaruiTabel() {
+            let badanTabel = document.getElementById("badanTabel");
+            badanTabel.innerHTML = "";
+
+            let totalDebit = 0;
+            let totalKredit = 0;
+
+            dataTransaksi.forEach(item => {
+                let baris = badanTabel.insertRow();
+                let cellAkun = baris.insertCell(0);
+                let cellDebit = baris.insertCell(1);
+                let cellKredit = baris.insertCell(2);
+
+                cellAkun.innerHTML = item.akun;
+                cellDebit.innerHTML = item.jenis === "Debit" ? item.jumlah.toLocaleString() : "-";
+                cellKredit.innerHTML = item.jenis === "Kredit" ? item.jumlah.toLocaleString() : "-";
+
+                if (item.jenis === "Debit") totalDebit += item.jumlah;
+                if (item.jenis === "Kredit") totalKredit += item.jumlah;
+            });
+
+            document.getElementById("totalDebit").innerText = totalDebit.toLocaleString();
+            document.getElementById("totalKredit").innerText = totalKredit.toLocaleString();
+        }
+
+        function simpanPDF() {
+            const { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+
+            doc.text("Neraca Saldo, Jurnal Penyesuaian, dan Neraca Lajur", 10, 10);
+
+            let rows = [];
+            dataTransaksi.forEach(item => {
+                rows.push([
+                    item.akun,
+                    item.jenis === "Debit" ? item.jumlah.toLocaleString() : "-",
+                    item.jenis === "Kredit" ? item.jumlah.toLocaleString() : "-"
+                ]);
+            });
+
+            doc.autoTable({
+                head: [["Akun", "Debit (Rp)", "Kredit (Rp)"]],
+                body: rows
+            });
+
+            doc.save("Neraca_Saldo.pdf");
+        }
+
+        window.onload = perbaruiTabel;
+    </script>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Laba Rugi - Neraca Lajur</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        /* CSS responsif */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+        .input-group label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .input-group input,
+        .input-group select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 100%;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .button-group button {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+        #addTransaction {
+            background-color: #28a745;
+        }
+        #deleteLastRow {
+            background-color: #dc3545;
+        }
+        #savePdf {
+            background-color: #007bff;
+        }
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        .total-row td {
+            font-weight: bold;
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Laporan Laba Rugi - Neraca Lajur</h2>
+
+        <div class="input-group">
+            <label>Akun: <input type="text" id="akun"></label>
+            <label>Jenis:
+                <select id="jenis">
+                    <option value="Debit">Debit</option>
+                    <option value="Kredit">Kredit</option>
+                </select>
+            </label>
+            <label>Jumlah (Rp): <input type="number" id="jumlah"></label>
+        </div>
+
+        <div class="button-group">
+            <button id="addTransaction" onclick="tambahTransaksi()">Tambah Data</button>
+            <button id="deleteLastRow" onclick="hapusTransaksiTerakhir()">Hapus Data Terakhir</button>
+            <button id="savePdf" onclick="simpanPDF()">Simpan PDF</button>
+        </div>
+
+        <div class="table-container">
+            <table id="tabelLabaRugi">
+                <tr>
+                    <th>Akun</th>
+                    <th>Debit (Rp)</th>
+                    <th>Kredit (Rp)</th>
+                </tr>
+                <tbody id="badanTabel"></tbody>
+                <tr class="total-row">
+                    <td>Total</td>
+                    <td id="totalDebit">0</td>
+                    <td id="totalKredit">0</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let dataLabaRugi = JSON.parse(localStorage.getItem("dataLabaRugi")) || [];
+
+        function simpanKeLocalStorage() {
+            localStorage.setItem("dataLabaRugi", JSON.stringify(dataLabaRugi));
+        }
+
+        function tambahTransaksi() {
+            let akun = document.getElementById("akun").value;
+            let jenis = document.getElementById("jenis").value;
+            let jumlah = parseFloat(document.getElementById("jumlah").value);
+
+            if (!akun || isNaN(jumlah)) {
+                alert("Harap isi semua kolom dengan benar.");
+                return;
+            }
+
+            dataLabaRugi.push({ akun, jenis, jumlah });
+            simpanKeLocalStorage();
+            perbaruiTabel();
+        }
+
+        function hapusTransaksiTerakhir() {
+            if (dataLabaRugi.length > 0) {
+                dataLabaRugi.pop();
+                simpanKeLocalStorage();
+                perbaruiTabel();
+            } else {
+                alert("Tidak ada data untuk dihapus.");
+            }
+        }
+
+        function perbaruiTabel() {
+            let badanTabel = document.getElementById("badanTabel");
+            badanTabel.innerHTML = "";
+
+            let totalDebit = 0;
+            let totalKredit = 0;
+
+            dataLabaRugi.forEach(item => {
+                let baris = badanTabel.insertRow();
+                let cellAkun = baris.insertCell(0);
+                let cellDebit = baris.insertCell(1);
+                let cellKredit = baris.insertCell(2);
+
+                cellAkun.innerHTML = item.akun;
+                cellDebit.innerHTML = item.jenis === "Debit" ? item.jumlah.toLocaleString() : "-";
+                cellKredit.innerHTML = item.jenis === "Kredit" ? item.jumlah.toLocaleString() : "-";
+
+                if (item.jenis === "Debit") totalDebit += item.jumlah;
+                if (item.jenis === "Kredit") totalKredit += item.jumlah;
+            });
+
+            document.getElementById("totalDebit").innerText = totalDebit.toLocaleString();
+            document.getElementById("totalKredit").innerText = totalKredit.toLocaleString();
+        }
+
+        function simpanPDF() {
+            const { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+
+            doc.text("Laporan Laba Rugi - Neraca Lajur", 10, 10);
+
+            let rows = [];
+            dataLabaRugi.forEach(item => {
+                rows.push([
+                    item.akun,
+                    item.jenis === "Debit" ? item.jumlah.toLocaleString() : "-",
+                    item.jenis === "Kredit" ? item.jumlah.toLocaleString() : "-"
+                ]);
+            });
+
+            doc.autoTable({
+                head: [["Akun", "Debit (Rp)", "Kredit (Rp)"]],
+                body: rows
+            });
+
+            doc.save("Laporan_Laba_Rugi.pdf");
+        }
+
+        window.onload = perbaruiTabel;
+    </script>
+</body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Laba Rugi</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        /* CSS responsif */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+        .input-group label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .input-group input,
+        .input-group select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 100%;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .button-group button {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+        #addTransaction {
+            background-color: #28a745;
+        }
+        #deleteLastRow {
+            background-color: #dc3545;
+        }
+        #savePdf {
+            background-color: #007bff;
+        }
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        .total-row td {
+            font-weight: bold;
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Laporan Laba Rugi</h2>
+
+        <div class="input-group">
+            <label>Akun: <input type="text" id="akun"></label>
+            <label>Kategori:
+                <select id="kategori">
+                    <option value="Pendapatan">Pendapatan</option>
+                    <option value="Diskon Penjualan">Diskon Penjualan</option>
+                    <option value="Retur Penjualan">Retur Penjualan</option>
+                    <option value="HPP">HPP</option>
+                    <option value="Beban Operasional">Beban Operasional</option>
+                    <option value="Beban Non-Operasional">Beban Non-Operasional</option>
+                    <option value="Pendapatan Non-Operasional">Pendapatan Non-Operasional</option>
+                </select>
+            </label>
+            <label>Jumlah (Rp): <input type="number" id="jumlah"></label>
+        </div>
+
+        <div class="button-group">
+            <button id="addTransaction" onclick="tambahTransaksi()">Tambah Data</button>
+            <button id="deleteLastRow" onclick="hapusTransaksiTerakhir()">Hapus Data Terakhir</button>
+            <button id="savePdf" onclick="simpanPDF()">Simpan PDF</button>
+        </div>
+
+        <div class="table-container">
+            <table id="tabelLabaRugi">
+                <tr>
+                    <th>Akun</th>
+                    <th>Kategori</th>
+                    <th>Jumlah (Rp)</th>
+                </tr>
+                <tbody id="badanTabel"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let dataLabaRugi = JSON.parse(localStorage.getItem("dataLabaRugi")) || [];
+
+        function simpanKeLocalStorage() {
+            localStorage.setItem("dataLabaRugi", JSON.stringify(dataLabaRugi));
+        }
+
+        function tambahTransaksi() {
+            let akun = document.getElementById("akun").value;
+            let kategori = document.getElementById("kategori").value;
+            let jumlah = parseFloat(document.getElementById("jumlah").value);
+
+            if (!akun || isNaN(jumlah)) {
+                alert("Harap isi semua kolom dengan benar.");
+                return;
+            }
+
+            dataLabaRugi.push({ akun, kategori, jumlah });
+            simpanKeLocalStorage();
+            perbaruiTabel();
+        }
+
+        function hapusTransaksiTerakhir() {
+            if (dataLabaRugi.length > 0) {
+                dataLabaRugi.pop();
+                simpanKeLocalStorage();
+                perbaruiTabel();
+            } else {
+                alert("Tidak ada data untuk dihapus.");
+            }
+        }
+
+        function perbaruiTabel() {
+            let badanTabel = document.getElementById("badanTabel");
+            badanTabel.innerHTML = "";
+
+            dataLabaRugi.forEach(item => {
+                let baris = badanTabel.insertRow();
+                let cellAkun = baris.insertCell(0);
+                let cellKategori = baris.insertCell(1);
+                let cellJumlah = baris.insertCell(2);
+
+                cellAkun.innerHTML = item.akun;
+                cellKategori.innerHTML = item.kategori;
+                cellJumlah.innerHTML = item.jumlah.toLocaleString();
+            });
+        }
+
+        function simpanPDF() {
+            const { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+
+            doc.text("Laporan Laba Rugi", 10, 10);
+
+            let rows = [];
+            dataLabaRugi.forEach(item => {
+                rows.push([item.akun, item.kategori, item.jumlah.toLocaleString()]);
+            });
+
+            doc.autoTable({
+                head: [["Akun", "Kategori", "Jumlah (Rp)"]],
+                body: rows
+            });
+
+            doc.save("Laporan_Laba_Rugi.pdf");
+        }
+
+        window.onload = perbaruiTabel;
+    </script>
+</body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Laba Rugi</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+        .input-group label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .input-group input,
+        .input-group select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 100%;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .button-group button {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+        #addTransaction {
+            background-color: #28a745;
+        }
+        #deleteLastRow {
+            background-color: #dc3545;
+        }
+        #savePdf {
+            background-color: #007bff;
+        }
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        .total-row td {
+            font-weight: bold;
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Laporan Laba Rugi</h2>
+
+        <div class="input-group">
+            <label>Akun: <input type="text" id="akun"></label>
+            <label>Kategori:
+                <select id="kategori">
+                    <option value="Pendapatan">Pendapatan</option>
+                    <option value="Diskon Penjualan">Diskon Penjualan</option>
+                    <option value="Retur Penjualan">Retur Penjualan</option>
+                    <option value="HPP">HPP</option>
+                    <option value="Beban Operasional">Beban Operasional</option>
+                    <option value="Beban Non-Operasional">Beban Non-Operasional</option>
+                    <option value="Pendapatan Non-Operasional">Pendapatan Non-Operasional</option>
+                </select>
+            </label>
+            <label>Jumlah (Rp): <input type="number" id="jumlah"></label>
+        </div>
+
+        <div class="button-group">
+            <button id="addTransaction" onclick="tambahTransaksi()">Tambah Data</button>
+            <button id="deleteLastRow" onclick="hapusTransaksiTerakhir()">Hapus Data Terakhir</button>
+            <button id="savePdf" onclick="simpanPDF()">Simpan PDF</button>
+        </div>
+
+        <div class="table-container">
+            <table id="tabelLabaRugi">
+                <tr>
+                    <th>Akun</th>
+                    <th>Kategori</th>
+                    <th>Jumlah (Rp)</th>
+                </tr>
+                <tbody id="badanTabel"></tbody>
+                <tr class="total-row">
+                    <td colspan="2">Total Pendapatan</td>
+                    <td id="totalPendapatan">0</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="2">Total Beban</td>
+                    <td id="totalBeban">0</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="2">Laba/Rugi</td>
+                    <td id="labaRugi">0</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let dataLabaRugi = JSON.parse(localStorage.getItem("dataLabaRugi")) || [];
+
+        function simpanKeLocalStorage() {
+            localStorage.setItem("dataLabaRugi", JSON.stringify(dataLabaRugi));
+        }
+
+        function tambahTransaksi() {
+            let akun = document.getElementById("akun").value;
+            let kategori = document.getElementById("kategori").value;
+            let jumlah = parseFloat(document.getElementById("jumlah").value);
+
+            if (!akun || isNaN(jumlah)) {
+                alert("Harap isi semua kolom dengan benar.");
+                return;
+            }
+
+            dataLabaRugi.push({ akun, kategori, jumlah });
+            simpanKeLocalStorage();
+            perbaruiTabel();
+        }
+
+        function hapusTransaksiTerakhir() {
+            if (dataLabaRugi.length > 0) {
+                dataLabaRugi.pop();
+                simpanKeLocalStorage();
+                perbaruiTabel();
+            } else {
+                alert("Tidak ada data untuk dihapus.");
+            }
+        }
+
+        function perbaruiTabel() {
+            let badanTabel = document.getElementById("badanTabel");
+            badanTabel.innerHTML = "";
+
+            let totalPendapatan = 0;
+            let totalBeban = 0;
+
+            dataLabaRugi.forEach(item => {
+                let baris = badanTabel.insertRow();
+                let cellAkun = baris.insertCell(0);
+                let cellKategori = baris.insertCell(1);
+                let cellJumlah = baris.insertCell(2);
+
+                cellAkun.innerHTML = item.akun;
+                cellKategori.innerHTML = item.kategori;
+                cellJumlah.innerHTML = item.jumlah.toLocaleString();
+
+                if (item.kategori.includes("Pendapatan")) {
+                    totalPendapatan += item.jumlah;
+                } else {
+                    totalBeban += item.jumlah;
+                }
+            });
+
+            document.getElementById("totalPendapatan").innerText = totalPendapatan.toLocaleString();
+            document.getElementById("totalBeban").innerText = totalBeban.toLocaleString();
+            document.getElementById("labaRugi").innerText = (totalPendapatan - totalBeban).toLocaleString();
+        }
+
+        function simpanPDF() {
+            const { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+            doc.text("Laporan Laba Rugi", 10, 10);
+            doc.autoTable({ html: "#tabelLabaRugi" });
+            doc.save("Laporan_Laba_Rugi.pdf");
+        }
+
+        window.onload = perbaruiTabel;
+    </script>
+</body>
 </html>
