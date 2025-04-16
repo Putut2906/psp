@@ -18,7 +18,7 @@ body{
   width: 260px;
   background: #11101d;
   z-index: 100;
-  transition: all 0.5s ease;
+  transition: all 0.2s ease;
 }
 .sidebar.close{
   width: 68px;
