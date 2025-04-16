@@ -72,7 +72,7 @@ body{
 }
 .sidebar .nav-links li i{
   height: 48px;
-  min-width: 63px;
+  max-width: 240px;
   text-align: center;
   line-height: 53px;
   color: #ffffff;
