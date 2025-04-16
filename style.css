@@ -14,7 +14,7 @@ body{
   position: fixed;
   top: 0;
   left: 0;
-  height: 100vh;
+  height: 100vh
   width: 260px;
   background: #3674B5;
   z-index: 100;
@@ -72,7 +72,7 @@ body{
 }
 .sidebar .nav-links li i{
   height: 48px;
-  max-width: 240px;
+  min-width: 63px;
   text-align: center;
   line-height: 53px;
   color: #ffffff;
@@ -263,4 +263,3 @@ body{
     left: 78px;
     width: calc(100% - 78px);
   }
-}
