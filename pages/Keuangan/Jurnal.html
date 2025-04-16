@@ -1,4 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Singghara</title>
+    <link rel="stylesheet" href="https://putut2906.github.io/psp/style.css" />
+    <link
+      href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div id="sidebar-container"></div>
+    <!-- Sidebar akan dimuat di sini -->
+    <script>
+      function initSidebar() {
+        let arrows = document.querySelectorAll(".arrow");
+        arrows.forEach((arrow) => {
+          arrow.addEventListener("click", (e) => {
+            let arrowParent = e.target.closest("li"); // Menggunakan closest() untuk keamanan
+            arrowParent.classList.toggle("showMenu");
+          });
+        });
 
+        let sidebar = document.querySelector(".sidebar");
+        let sidebarBtn = document.querySelector(".bx-menu");
+
+        if (sidebar && sidebarBtn) {
+          sidebarBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("close");
+          });
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("https://putut2906.github.io/psp/sidebar.html")
+          .then((response) => response.text())
+          .then((data) => {
+            document.getElementById("sidebar-container").innerHTML = data;
+            initSidebar(); // Panggil fungsi setelah sidebar dimuat
+          });
+      });
+    </script>
+  </body>
+</html>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
