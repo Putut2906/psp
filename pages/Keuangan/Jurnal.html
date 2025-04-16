@@ -1,1 +1,305 @@
 
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    .container-header, .container-transaksi {
+      background-color: #ffffff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .container-header {
+      border-left: 4px solid #0d6efd;
+    }
+
+    .container-transaksi {
+      border-left: 4px solid #198754;
+    }
+
+    .form-header, .form-transaksi {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .header {
+      text-align: center;
+      margin: 30px 0 10px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+
+    .header h2 {
+      font-size: 18px;
+      margin: 0;
+    }
+
+    .header h3 {
+      font-size: 12px;
+      margin: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: white;
+    }
+
+    th, td {
+      border: 1px solid #dee2e6;
+      padding: 8px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    th {
+      background-color: #0d6efd;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h2>Form Jurnal Umum</h2>
+
+  <div class="container-header">
+    <div class="form-header">
+      <label>Judul:</label>
+      <input type="text" id="judul" placeholder="Judul Laporan">
+      <label>Nama Perusahaan:</label>
+      <input type="text" id="perusahaan" placeholder="Nama Perusahaan">
+      <label>Periode:</label>
+      <input type="text" id="periode" placeholder="Periode">
+    </div>
+  </div>
+
+  <div class="container-transaksi">
+    <div class="form-transaksi">
+      <label>Tanggal:</label>
+      <input type="text" id="tanggal" placeholder="dd/mm/yyyy">
+      <label>Kode Akun:</label>
+      <input type="text" id="kodeAkun">
+      <label>Keterangan:</label>
+      <input type="text" id="keterangan">
+      <label>Ref:</label>
+      <input type="text" id="ref">
+      <label>Jenis:</label>
+      <select id="jenis">
+        <option value="debit">Debit</option>
+        <option value="kredit">Kredit</option>
+      </select>
+      <label>Nominal:</label>
+      <input type="number" id="nominal">
+    </div>
+  </div>
+
+  <div style="display:flex; gap: 10px; margin-bottom: 20px;">
+    <button onclick="submitForm()">Tambah</button>
+    <button onclick="resetForm()">Reset</button>
+  </div>
+
+  <div class="header">
+    <h1 id="displayJudul"></h1>
+    <h2 id="displayPerusahaan"></h2>
+    <h3 id="displayPeriode"></h3>
+  </div>
+
+  <table id="dataTable">
+    <thead>
+      <tr>
+        <th>Tanggal</th>
+        <th>Kode Akun</th>
+        <th>Keterangan</th>
+        <th>Ref</th>
+        <th>Debit</th>
+        <th>Kredit</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4"><strong>Total</strong></td>
+        <td id="totalDebit">-</td>
+        <td id="totalKredit">-</td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div style="margin-top: 20px; text-align: center;">
+    <button onclick="exportToExcel()">Export ke Excel</button>
+    <button onclick="exportToPDF()">Export ke PDF</button>
+  </div>
+
+  <script>
+    let data = JSON.parse(localStorage.getItem('jurnalData')) || [];
+    let editingIndex = null;
+
+    function formatRupiah(angka) {
+      const val = parseFloat(angka || 0);
+      return val === 0 ? '-' : 'Rp' + val.toLocaleString('id-ID');
+    }
+
+    function loadData() {
+      const tbody = document.querySelector("#dataTable tbody");
+      tbody.innerHTML = "";
+      let totalDebit = 0, totalKredit = 0;
+
+      data.forEach((entry, index) => {
+        const row = tbody.insertRow();
+        row.insertCell(0).textContent = entry.tanggal;
+        row.insertCell(1).textContent = entry.kodeAkun;
+        row.insertCell(2).textContent = entry.keterangan;
+        row.insertCell(3).textContent = entry.ref;
+        row.insertCell(4).textContent = formatRupiah(entry.debit);
+        row.insertCell(5).textContent = formatRupiah(entry.kredit);
+        row.insertCell(6).innerHTML = `<button onclick="editEntry(${index})">Edit</button> <button onclick="deleteEntry(${index})">Hapus</button>`;
+
+        totalDebit += parseFloat(entry.debit || 0);
+        totalKredit += parseFloat(entry.kredit || 0);
+      });
+
+      document.getElementById("totalDebit").textContent = formatRupiah(totalDebit);
+      document.getElementById("totalKredit").textContent = formatRupiah(totalKredit);
+    }
+
+    function submitForm() {
+      const entry = {
+        tanggal: document.getElementById("tanggal").value,
+        kodeAkun: document.getElementById("kodeAkun").value,
+        keterangan: document.getElementById("keterangan").value,
+        ref: document.getElementById("ref").value,
+        debit: document.getElementById("jenis").value === "debit" ? document.getElementById("nominal").value : "",
+        kredit: document.getElementById("jenis").value === "kredit" ? document.getElementById("nominal").value : ""
+      };
+
+      if (editingIndex !== null) {
+        data[editingIndex] = entry;
+        editingIndex = null;
+      } else {
+        data.push(entry);
+      }
+
+      localStorage.setItem('jurnalData', JSON.stringify(data));
+      loadData();
+      resetForm();
+      updateHeader();
+    }
+
+    function editEntry(index) {
+      const entry = data[index];
+      document.getElementById("tanggal").value = entry.tanggal;
+      document.getElementById("kodeAkun").value = entry.kodeAkun;
+      document.getElementById("keterangan").value = entry.keterangan;
+      document.getElementById("ref").value = entry.ref;
+      document.getElementById("jenis").value = entry.debit ? "debit" : "kredit";
+      document.getElementById("nominal").value = entry.debit || entry.kredit;
+      editingIndex = index;
+    }
+
+    function deleteEntry(index) {
+      data.splice(index, 1);
+      localStorage.setItem('jurnalData', JSON.stringify(data));
+      loadData();
+    }
+
+    function resetForm() {
+      document.getElementById("tanggal").value = "";
+      document.getElementById("kodeAkun").value = "";
+      document.getElementById("keterangan").value = "";
+      document.getElementById("ref").value = "";
+      document.getElementById("nominal").value = "";
+      editingIndex = null;
+    }
+
+    function updateHeader() {
+      document.getElementById("displayJudul").textContent = document.getElementById("judul").value;
+      document.getElementById("displayPerusahaan").textContent = document.getElementById("perusahaan").value;
+      document.getElementById("displayPeriode").textContent = document.getElementById("periode").value;
+    }
+
+    function exportToExcel() {
+      const header = [
+        ["Judul: " + document.getElementById("judul").value],
+        ["Perusahaan: " + document.getElementById("perusahaan").value],
+        ["Periode: " + document.getElementById("periode").value],
+        [],
+        ["Tanggal", "Kode Akun", "Keterangan", "Ref", "Debit", "Kredit"]
+      ];
+
+      const rows = data.map(e => [
+        e.tanggal, e.kodeAkun, e.keterangan, e.ref, e.debit, e.kredit
+      ]);
+
+      const ws = XLSX.utils.aoa_to_sheet([...header, ...rows]);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Jurnal Umum");
+      XLSX.writeFile(wb, "jurnal_umum.xlsx");
+    }
+
+    function exportToPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      doc.setFontSize(24);
+      doc.text(document.getElementById("judul").value || "Judul Laporan", 105, 15, { align: "center" });
+      doc.setFontSize(18);
+      doc.text(document.getElementById("perusahaan").value || "Nama Perusahaan", 105, 23, { align: "center" });
+      doc.setFontSize(12);
+      doc.text("Periode: " + (document.getElementById("periode").value || "-"), 105, 30, { align: "center" });
+
+      doc.autoTable({
+        startY: 35,
+        html: '#dataTable'
+      });
+
+      doc.save("jurnal_umum.pdf");
+    }
+
+    window.onload = () => {
+      loadData();
+      updateHeader();
+    };
+  </script>
+</body>
+  </html>
