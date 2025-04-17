@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Singghara</title>
+    <link rel="stylesheet" href="https://putut2906.github.io/psp/style.css" />
+    <link
+      href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div id="sidebar-container"></div>
+    <!-- Sidebar akan dimuat di sini -->
+    <script>
+      function initSidebar() {
+        let arrows = document.querySelectorAll(".arrow");
+        arrows.forEach((arrow) => {
+          arrow.addEventListener("click", (e) => {
+            let arrowParent = e.target.closest("li"); // Menggunakan closest() untuk keamanan
+            arrowParent.classList.toggle("showMenu");
+          });
+        });
+
+        let sidebar = document.querySelector(".sidebar");
+        let sidebarBtn = document.querySelector(".bx-menu");
+
+        if (sidebar && sidebarBtn) {
+          sidebarBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("close");
+          });
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("https://putut2906.github.io/psp/sidebar.html")
+          .then((response) => response.text())
+          .then((data) => {
+            document.getElementById("sidebar-container").innerHTML = data;
+            initSidebar(); // Panggil fungsi setelah sidebar dimuat
+          });
+      });
+    </script>
+  </body>
+</html>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f0f2f5;
+      padding: 20px;
+      margin-left: 80px;
+    }
+    .container {
+      background: #fff;
+      margin: 10px auto;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      max-width: 900px;
+    }
+    h2 { text-align: center; color: #333; }
+    form label {
+      display: block; margin-top: 10px; font-weight: bold;
+    }
+    input, select, button {
+      width: 100%; padding: 8px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc;
+    }
+    button {
+      background-color: #28a745; color: white; font-weight: bold; border: none; margin-top: 15px; cursor: pointer;
+    }
+    button:hover { background-color: #218838; }
+    .header-display { text-align: center; margin-bottom: 20px; }
+    .judul { font-size: 24px; font-weight: bold; }
+    .perusahaan { font-size: 18px; font-weight: bold; }
+    .periode { font-size: 12px; }
+    .table-responsive { width: 100%; overflow-x: auto; }
+    table {
+      width: 100%; border-collapse: collapse; margin-top: 20px; min-width: 700px; background-color: #fff;
+    }
+    th, td {
+      border: 2px solid #333; padding: 12px 8px; text-align: center; background-color: #f9f9f9; font-size: 14px;
+    }
+    th { background-color: #4CAF50; color: white; font-weight: bold; }
+    table thead th { background-color: #45a049; }
+    table tbody tr:nth-child(even) { background-color: #f2f2f2; }
+    table tbody tr:nth-child(odd) { background-color: #ffffff; }
+    td.editable:hover { background-color: #eef; cursor: pointer; }
+    .pdf-button-wrapper {
+      text-align: center; margin-top: 20px;
+    }
+    @media (max-width: 768px) {
+      input, select, button { font-size: 14px; }
+      table, th, td { font-size: 12px; }
+      .judul { font-size: 20px; }
+      .perusahaan { font-size: 16px; }
+      .periode { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Informasi Header</h2>
+  <form id="headerForm">
+    <label>Judul</label>
+    <input type="text" id="judul" required>
+    <label>Nama Perusahaan</label>
+    <input type="text" id="perusahaan" required>
+    <label>Periode</label>
+    <input type="text" id="periode" required>
+    <button type="submit">Tampilkan Header</button>
+  </form>
+</div>
+<div class="container">
+  <h2>Form Buku Besar</h2>
+  <form id="inputForm">
+    <label>Tanggal</label>
+    <input type="date" id="tanggal" required>
+    <label>Keterangan</label>
+    <input type="text" id="keterangan" required>
+    <label>Ref</label>
+    <input type="text" id="ref" required>
+    <label>Jenis Transaksi</label>
+    <select id="jenisTransaksi">
+      <option value="debit">Debit</option>
+      <option value="kredit">Kredit</option>
+    </select>
+    <input type="number" id="jumlahTransaksi" placeholder="Jumlah" required>
+    <div style="display: flex; justify-content: space-between;">
+      <button type="submit">Tambah</button>
+      <button type="button" id="addNewBtn">Tambah Baru</button>
+    </div>
+  </form>
+</div>
+<div class="container" id="tableContainer">
+  <div class="header-display" id="headerDisplay"></div>
+  <div class="table-responsive">
+    <table id="ledgerTable">
+      <thead>
+        <tr>
+          <th rowspan="2">Tanggal</th>
+          <th rowspan="2">Keterangan</th>
+          <th rowspan="2">Ref</th>
+          <th rowspan="2">Debit</th>
+          <th rowspan="2">Kredit</th>
+          <th colspan="2">Saldo</th>
+        </tr>
+        <tr>
+          <th>Debit</th>
+          <th>Kredit</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr>
+          <th colspan="3">Total</th>
+          <th id="totalDebit">0</th>
+          <th id="totalKredit">0</th>
+          <th id="totalSaldoDebit">0</th>
+          <th id="totalSaldoKredit">0</th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="pdf-button-wrapper" id="pdfWrapper">
+    <button onclick="simpanPDF()">Simpan sebagai PDF</button>
+  </div>
+</div>
+
+<script>
+  const bulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+  const table = document.querySelector("#ledgerTable tbody");
+  const totalDebit = document.getElementById("totalDebit");
+  const totalKredit = document.getElementById("totalKredit");
+  const totalSaldoDebit = document.getElementById("totalSaldoDebit");
+  const totalSaldoKredit = document.getElementById("totalSaldoKredit");
+
+  function formatTanggal(tgl) {
+    const dateObj = new Date(tgl);
+    const hari = dateObj.getDate();
+    const bulan = bulanIndo[dateObj.getMonth()];
+    const tahun = dateObj.getFullYear();
+    return `${hari} ${bulan} ${tahun}`;
+  }
+
+  function simpanLocalStorage() {
+    localStorage.setItem("tabelData", table.innerHTML);
+    localStorage.setItem("judul", document.querySelector(".judul")?.innerText || "");
+    localStorage.setItem("perusahaan", document.querySelector(".perusahaan")?.innerText || "");
+    localStorage.setItem("periode", document.querySelector(".periode")?.innerText || "");
+  }
+
+  function loadLocalStorage() {
+    if (localStorage.getItem("tabelData")) table.innerHTML = localStorage.getItem("tabelData");
+    document.getElementById("headerDisplay").innerHTML = `<div class="judul">${localStorage.getItem("judul")}</div><div class="perusahaan">${localStorage.getItem("perusahaan")}</div><div class="periode">${localStorage.getItem("periode")}</div>`;
+    tambahEventEdit();
+  }
+
+  function tambahEventEdit() {
+    document.querySelectorAll("td.editable").forEach(td => {
+      td.ondblclick = () => {
+        const val = td.innerText;
+        const input = prompt("Edit data:", val);
+        if (input !== null) td.innerText = input;
+        simpanLocalStorage();
+      };
+    });
+
+    // Fitur hapus baris dengan klik kanan pada tanggal
+    document.querySelectorAll("td.editable").forEach(td => {
+      if (td.cellIndex === 0) {  // Kolom Tanggal
+        td.oncontextmenu = (e) => {
+          e.preventDefault();
+          if (confirm("Apakah Anda ingin menghapus baris ini?")) {
+            td.parentNode.remove();
+            updateTotal();
+            simpanLocalStorage();
+          }
+        };
+      }
+    });
+  }
+
+  function updateTotal() {
+    let debit = 0, kredit = 0, saldoD = 0, saldoK = 0;
+    table.querySelectorAll("tr").forEach(row => {
+      debit += parseFloat(row.cells[3].innerText) || 0;
+      kredit += parseFloat(row.cells[4].innerText) || 0;
+      saldoD += parseFloat(row.cells[5].innerText) || 0;
+      saldoK += parseFloat(row.cells[6].innerText) || 0;
+    });
+    totalDebit.innerText = debit;
+    totalKredit.innerText = kredit;
+    totalSaldoDebit.innerText = saldoD;
+    totalSaldoKredit.innerText = saldoK;
+  }
+
+  document.getElementById("headerForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const judul = document.getElementById("judul").value;
+    const perusahaan = document.getElementById("perusahaan").value;
+    const periode = document.getElementById("periode").value;
+    document.getElementById("headerDisplay").innerHTML = `<div class="judul">${judul}</div><div class="perusahaan">${perusahaan}</div><div class="periode">${periode}</div>`;
+    simpanLocalStorage();
+  });
+
+  document.getElementById("inputForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const tanggalRaw = document.getElementById("tanggal").value;
+    const tanggal = formatTanggal(tanggalRaw);
+    const ket = document.getElementById("keterangan").value;
+    const ref = document.getElementById("ref").value;
+    const jenisTrans = document.getElementById("jenisTransaksi").value;
+    const jumlahTrans = parseFloat(document.getElementById("jumlahTransaksi").value);
+
+    let debit = "-", kredit = "-", saldoDebit = 0, saldoKredit = 0;
+    const rows = table.querySelectorAll("tr");
+    if (rows.length > 0) {
+      const lastRow = rows[rows.length - 1];
+      saldoDebit = parseFloat(lastRow.cells[5].innerText) || 0;
+      saldoKredit = parseFloat(lastRow.cells[6].innerText) || 0;
+    }
+
+    if (jenisTrans === "debit") {
+      debit = jumlahTrans;
+      saldoDebit += jumlahTrans;
+    } else {
+      kredit = jumlahTrans;
+      saldoKredit += jumlahTrans;
+    }
+
+    const row = table.insertRow();
+    row.innerHTML = `
+      <td class="editable">${tanggal}</td>
+      <td class="editable">${ket}</td>
+      <td class="editable">${ref}</td>
+      <td class="editable">${debit}</td>
+      <td class="editable">${kredit}</td>
+      <td class="editable">${saldoDebit || "-"}</td>
+      <td class="editable">${saldoKredit || "-"}</td>
+    `;
+    tambahEventEdit();
+    updateTotal();
+    simpanLocalStorage();
+  });
+
+  // Fungsi Tambah Baru
+  document.getElementById("addNewBtn").addEventListener("click", function() {
+    document.getElementById("inputForm").reset();
+  });
+
+  function simpanPDF() {
+    document.getElementById("pdfWrapper").style.display = "none";
+    const element = document.getElementById("tableContainer");
+    const opt = {
+      margin: [0.3, 0.3, 0.3, 0.3],
+      filename: 'buku_besar.pdf',
+      image: { type: 'jpeg', quality: 1 },
+      html2canvas: { useCORS: true, scale: 3 },
+      jsPDF: { unit: 'pt', format: 'a4', orientation: 'landscape' }
+    };
+    html2pdf().set(opt).from(element).save().then(() => {
+      document.getElementById("pdfWrapper").style.display = "block";
+    });
+  }
+
+  loadLocalStorage();
+  updateTotal();
+</script>
+
+</body>
+</html>
