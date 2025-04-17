@@ -47,7 +47,7 @@
   </body>
 </html>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   <style>
@@ -57,130 +57,105 @@
       padding: 20px;
       margin-left: 80px;
     }
-
     h2 {
       text-align: center;
     }
-
     .container-header, .container-transaksi {
-      background-color: #ffffff;
+      background-color: #BFCFE7;
       padding: 15px;
       border-radius: 8px;
       margin-bottom: 20px;
       box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      border-left: 4px solid #578FCA;
     }
-
-    .container-header {
-      border-left: 4px solid #0d6efd;
-    }
-
-    .container-transaksi {
-      border-left: 4px solid #198754;
-    }
-
-    .form-header, .form-transaksi {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-
     label {
       font-weight: bold;
     }
-
     input, select, button {
       width: 100%;
       padding: 8px;
       font-size: 14px;
+      border: 2px solid #b3acab;
+      border-radius: 8px;
     }
-
     button {
       background-color: #007bff;
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 8px;
       cursor: pointer;
+      margin-top: 7px;
     }
-
     button:hover {
       background-color: #0056b3;
     }
-
     .header {
       text-align: center;
       margin: 30px 0 10px;
     }
-
-    .header h1 {
-      font-size: 24px;
-      margin: 0;
+    .header h1 { font-size: 24px; font-weight: bold; margin: 0; }
+    .header h2 { font-size: 18px; font-weight: bold; margin: 0; }
+    .header h3 { font-size: 12px; margin: 0; }
+    .table-container {
+      overflow-x: auto;
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      border-left: 4px solid #0d6efd;
     }
-
-    .header h2 {
-      font-size: 18px;
-      margin: 0;
-    }
-
-    .header h3 {
-      font-size: 12px;
-      margin: 0;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
-      background-color: white;
     }
-
     th, td {
-      border: 1px solid #dee2e6;
+      border: 1px solid #000000;
       padding: 8px;
       text-align: center;
       font-size: 14px;
     }
-
     th {
-      background-color: #0d6efd;
-      color: white;
+      background-color: #525CEB;
+      color: rgb(189, 182, 182);
+    }
+    tfoot td {
+      font-weight: bold;
+      text-align: right;
+    }
+    td[contenteditable="true"] {
+      background-color: #fff7e6;
     }
   </style>
 </head>
 <body>
-  <h2>Form Jurnal Umum</h2>
 
+  <h2>Identitas </h2>
   <div class="container-header">
-    <div class="form-header">
-      <label>Judul:</label>
-      <input type="text" id="judul" placeholder="Judul Laporan">
-      <label>Nama Perusahaan:</label>
-      <input type="text" id="perusahaan" placeholder="Nama Perusahaan">
-      <label>Periode:</label>
-      <input type="text" id="periode" placeholder="Periode">
-    </div>
+    <label>Judul:</label>
+    <input type="text" id="judul" placeholder="Judul Laporan">
+    <label>Nama Perusahaan:</label>
+    <input type="text" id="perusahaan" placeholder="Nama Perusahaan">
+    <label>Periode:</label>
+    <input type="text" id="periode" placeholder="Periode">
   </div>
 
+  <h2>Transaksi</h2>
   <div class="container-transaksi">
-    <div class="form-transaksi">
-      <label>Tanggal:</label>
-      <input type="text" id="tanggal" placeholder="dd/mm/yyyy">
-      <label>Kode Akun:</label>
-      <input type="text" id="kodeAkun">
-      <label>Keterangan:</label>
-      <input type="text" id="keterangan">
-      <label>Ref:</label>
-      <input type="text" id="ref">
-      <label>Jenis:</label>
-      <select id="jenis">
-        <option value="debit">Debit</option>
-        <option value="kredit">Kredit</option>
-      </select>
-      <label>Nominal:</label>
-      <input type="number" id="nominal">
-    </div>
-  </div>
-
-  <div style="display:flex; gap: 10px; margin-bottom: 20px;">
+    <label>Tanggal:</label>
+    <input type="date" id="tanggal">
+    <label>Kode Akun:</label>
+    <input type="text" id="kodeAkun">
+    <label>Keterangan:</label>
+    <input type="text" id="keterangan">
+    <label>Ref:</label>
+    <input type="text" id="ref">
+    <label>Jenis:</label>
+    <select id="jenis">
+      <option value="debit">Debit</option>
+      <option value="kredit">Kredit</option>
+    </select>
+    <label>Nominal:</label>
+    <input type="number" id="nominal">
     <button onclick="submitForm()">Tambah</button>
     <button onclick="resetForm()">Reset</button>
   </div>
@@ -191,104 +166,64 @@
     <h3 id="displayPeriode"></h3>
   </div>
 
-  <table id="dataTable">
-    <thead>
-      <tr>
-        <th>Tanggal</th>
-        <th>Kode Akun</th>
-        <th>Keterangan</th>
-        <th>Ref</th>
-        <th>Debit</th>
-        <th>Kredit</th>
-        <th>Aksi</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-    <tfoot>
-      <tr>
-        <td colspan="4"><strong>Total</strong></td>
-        <td id="totalDebit">-</td>
-        <td id="totalKredit">-</td>
-        <td></td>
-      </tr>
-    </tfoot>
-  </table>
+  <div class="table-container">
+    <table id="dataTable">
+      <thead>
+        <tr>
+          <th>Tanggal</th>
+          <th>Kode Akun</th>
+          <th>Keterangan</th>
+          <th>Ref</th>
+          <th>Debit</th>
+          <th>Kredit</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4">Total</td>
+          <td id="totalDebit">Rp. 0</td>
+          <td id="totalKredit">Rp. 0</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
 
   <div style="margin-top: 20px; text-align: center;">
-    <button onclick="exportToExcel()">Export ke Excel</button>
     <button onclick="exportToPDF()">Export ke PDF</button>
   </div>
 
   <script>
-    let data = JSON.parse(localStorage.getItem('jurnalData')) || [];
-    let editingIndex = null;
+    const tableBody = document.querySelector("#dataTable tbody");
 
-    function formatRupiah(angka) {
-      const val = parseFloat(angka || 0);
-      return val === 0 ? '-' : 'Rp' + val.toLocaleString('id-ID');
-    }
-
-    function loadData() {
-      const tbody = document.querySelector("#dataTable tbody");
-      tbody.innerHTML = "";
-      let totalDebit = 0, totalKredit = 0;
-
-      data.forEach((entry, index) => {
-        const row = tbody.insertRow();
-        row.insertCell(0).textContent = entry.tanggal;
-        row.insertCell(1).textContent = entry.kodeAkun;
-        row.insertCell(2).textContent = entry.keterangan;
-        row.insertCell(3).textContent = entry.ref;
-        row.insertCell(4).textContent = formatRupiah(entry.debit);
-        row.insertCell(5).textContent = formatRupiah(entry.kredit);
-        row.insertCell(6).innerHTML = `<button onclick="editEntry(${index})">Edit</button> <button onclick="deleteEntry(${index})">Hapus</button>`;
-
-        totalDebit += parseFloat(entry.debit || 0);
-        totalKredit += parseFloat(entry.kredit || 0);
-      });
-
-      document.getElementById("totalDebit").textContent = formatRupiah(totalDebit);
-      document.getElementById("totalKredit").textContent = formatRupiah(totalKredit);
+    function formatTanggal(tgl) {
+      const d = new Date(tgl);
+      return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth()+1).padStart(2, '0')}/${d.getFullYear()}`;
     }
 
     function submitForm() {
-      const entry = {
-        tanggal: document.getElementById("tanggal").value,
-        kodeAkun: document.getElementById("kodeAkun").value,
-        keterangan: document.getElementById("keterangan").value,
-        ref: document.getElementById("ref").value,
-        debit: document.getElementById("jenis").value === "debit" ? document.getElementById("nominal").value : "",
-        kredit: document.getElementById("jenis").value === "kredit" ? document.getElementById("nominal").value : ""
-      };
+      const tanggal = document.getElementById("tanggal").value;
+      const kodeAkun = document.getElementById("kodeAkun").value;
+      const keterangan = document.getElementById("keterangan").value;
+      const ref = document.getElementById("ref").value;
+      const jenis = document.getElementById("jenis").value;
+      const nominal = parseFloat(document.getElementById("nominal").value);
 
-      if (editingIndex !== null) {
-        data[editingIndex] = entry;
-        editingIndex = null;
-      } else {
-        data.push(entry);
+      if (!tanggal || !kodeAkun || !keterangan || !ref || isNaN(nominal)) {
+        alert("Lengkapi semua kolom!");
+        return;
       }
 
-      localStorage.setItem('jurnalData', JSON.stringify(data));
-      loadData();
-      resetForm();
-      updateHeader();
-    }
+      const row = tableBody.insertRow();
+      row.insertCell().textContent = formatTanggal(tanggal);
+      row.insertCell().textContent = kodeAkun;
+      row.insertCell().textContent = keterangan;
+      row.insertCell().textContent = ref;
+      row.insertCell().textContent = jenis === "debit" ? "Rp. " + nominal.toLocaleString("id-ID") : "-";
+      row.insertCell().textContent = jenis === "kredit" ? "Rp. " + nominal.toLocaleString("id-ID") : "-";
 
-    function editEntry(index) {
-      const entry = data[index];
-      document.getElementById("tanggal").value = entry.tanggal;
-      document.getElementById("kodeAkun").value = entry.kodeAkun;
-      document.getElementById("keterangan").value = entry.keterangan;
-      document.getElementById("ref").value = entry.ref;
-      document.getElementById("jenis").value = entry.debit ? "debit" : "kredit";
-      document.getElementById("nominal").value = entry.debit || entry.kredit;
-      editingIndex = index;
-    }
-
-    function deleteEntry(index) {
-      data.splice(index, 1);
-      localStorage.setItem('jurnalData', JSON.stringify(data));
-      loadData();
+      updateTotal();
+      saveData();
     }
 
     function resetForm() {
@@ -296,58 +231,113 @@
       document.getElementById("kodeAkun").value = "";
       document.getElementById("keterangan").value = "";
       document.getElementById("ref").value = "";
+      document.getElementById("jenis").value = "debit";
       document.getElementById("nominal").value = "";
-      editingIndex = null;
     }
 
-    function updateHeader() {
-      document.getElementById("displayJudul").textContent = document.getElementById("judul").value;
-      document.getElementById("displayPerusahaan").textContent = document.getElementById("perusahaan").value;
-      document.getElementById("displayPeriode").textContent = document.getElementById("periode").value;
-    }
-
-    function exportToExcel() {
-      const header = [
-        ["Judul: " + document.getElementById("judul").value],
-        ["Perusahaan: " + document.getElementById("perusahaan").value],
-        ["Periode: " + document.getElementById("periode").value],
-        [],
-        ["Tanggal", "Kode Akun", "Keterangan", "Ref", "Debit", "Kredit"]
-      ];
-
-      const rows = data.map(e => [
-        e.tanggal, e.kodeAkun, e.keterangan, e.ref, e.debit, e.kredit
-      ]);
-
-      const ws = XLSX.utils.aoa_to_sheet([...header, ...rows]);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Jurnal Umum");
-      XLSX.writeFile(wb, "jurnal_umum.xlsx");
+    function updateTotal() {
+      let debit = 0, kredit = 0;
+      const rows = tableBody.querySelectorAll("tr");
+      rows.forEach(row => {
+        const d = row.cells[4].textContent.replace(/[^\d]/g, "");
+        const k = row.cells[5].textContent.replace(/[^\d]/g, "");
+        debit += d ? parseInt(d) : 0;
+        kredit += k ? parseInt(k) : 0;
+      });
+      document.getElementById("totalDebit").textContent = "Rp. " + debit.toLocaleString("id-ID");
+      document.getElementById("totalKredit").textContent = "Rp. " + kredit.toLocaleString("id-ID");
     }
 
     function exportToPDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
 
+      const judul = document.getElementById("judul").value || "Laporan Jurnal Umum";
+      const perusahaan = document.getElementById("perusahaan").value || "Nama Perusahaan";
+      const periode = document.getElementById("periode").value || "Periode";
+
       doc.setFontSize(24);
-      doc.text(document.getElementById("judul").value || "Judul Laporan", 105, 15, { align: "center" });
+      doc.setFont(undefined, "bold");
+      doc.text(judul, 105, 20, { align: "center" });
+
       doc.setFontSize(18);
-      doc.text(document.getElementById("perusahaan").value || "Nama Perusahaan", 105, 23, { align: "center" });
+      doc.text(perusahaan, 105, 30, { align: "center" });
+
       doc.setFontSize(12);
-      doc.text("Periode: " + (document.getElementById("periode").value || "-"), 105, 30, { align: "center" });
+      doc.setFont(undefined, "normal");
+      doc.text(periode, 105, 38, { align: "center" });
+
+      const rows = [];
+      const tr = tableBody.querySelectorAll("tr");
+      tr.forEach(row => {
+        const data = Array.from(row.cells).map(cell => cell.textContent.trim());
+        rows.push(data);
+      });
+
+      rows.push(["", "", "", "Total", document.getElementById("totalDebit").textContent, document.getElementById("totalKredit").textContent]);
 
       doc.autoTable({
-        startY: 35,
-        html: '#dataTable'
+        head: [["Tanggal", "Kode Akun", "Keterangan", "Ref", "Debit", "Kredit"]],
+        body: rows,
+        startY: 45,
+        styles: { fontSize: 10, halign: 'center' },
+        headStyles: { fillColor: [13, 110, 253] },
+        theme: "grid"
       });
 
       doc.save("jurnal_umum.pdf");
     }
 
-    window.onload = () => {
-      loadData();
-      updateHeader();
-    };
+    tableBody.addEventListener("dblclick", function (e) {
+      const target = e.target;
+      if (target.tagName === "TD") {
+        const td = target;
+        td.setAttribute("contenteditable", "true");
+        td.focus();
+
+        td.addEventListener("blur", function () {
+          td.removeAttribute("contenteditable");
+          updateTotal();
+          saveData();
+        }, { once: true });
+
+        td.addEventListener("keydown", function (evt) {
+          if (evt.key === "Enter") {
+            evt.preventDefault();
+            td.blur();
+          }
+        });
+      }
+    });
+
+    tableBody.addEventListener("contextmenu", function (e) {
+      e.preventDefault();
+      const td = e.target.closest("td");
+      if (!td) return;
+      if (confirm("Hapus baris ini?")) {
+        td.parentElement.remove();
+        updateTotal();
+        saveData();
+      }
+    });
+
+    function saveData() {
+      const rows = Array.from(tableBody.querySelectorAll("tr")).map(tr => {
+        return Array.from(tr.cells).map(td => td.textContent);
+      });
+      localStorage.setItem("jurnalData", JSON.stringify(rows));
+    }
+
+    function loadData() {
+      const saved = JSON.parse(localStorage.getItem("jurnalData") || "[]");
+      saved.forEach(cells => {
+        const row = tableBody.insertRow();
+        cells.forEach(text => row.insertCell().textContent = text);
+      });
+      updateTotal();
+    }
+
+    window.onload = loadData;
   </script>
 </body>
-  </html>
+</html>
