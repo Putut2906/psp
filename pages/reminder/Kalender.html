@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Singghara</title>
+    <link rel="stylesheet" href="https://putut2906.github.io/psp/style.css" />
+    <link
+      href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div id="sidebar-container"></div>
+    <!-- Sidebar akan dimuat di sini -->
+    <script>
+      function initSidebar() {
+        let arrows = document.querySelectorAll(".arrow");
+        arrows.forEach((arrow) => {
+          arrow.addEventListener("click", (e) => {
+            let arrowParent = e.target.closest("li"); // Menggunakan closest() untuk keamanan
+            arrowParent.classList.toggle("showMenu");
+          });
+        });
+
+        let sidebar = document.querySelector(".sidebar");
+        let sidebarBtn = document.querySelector(".bx-menu");
+
+        if (sidebar && sidebarBtn) {
+          sidebarBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("close");
+          });
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("https://putut2906.github.io/psp/sidebar.html")
+          .then((response) => response.text())
+          .then((data) => {
+            document.getElementById("sidebar-container").innerHTML = data;
+            initSidebar(); // Panggil fungsi setelah sidebar dimuat
+          });
+      });
+    </script>
+  </body>
+</html>
+
+  <style>
+    :root {
+      --primary: #2a9d8f;
+      --secondary: #f4a261;
+      --light: #fefae0;
+      --dark: #264653;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      margin-left: 65px;
+    }
+
+    .calendar-container {
+      width: 100%;
+      max-width: 900px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      border-radius: 15px;
+      overflow: hidden;
+      background: white;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--primary);
+      color: white;
+      padding: 20px;
+    }
+
+    .calendar-header button {
+      background-color: var(--secondary);
+      border: none;
+      padding: 10px 15px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .calendar-header h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .calendar-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calendar-table th, .calendar-table td {
+      border: 1px solid #ccc;
+      width: 14.28%;
+      height: 100px;
+      vertical-align: top;
+      padding: 6px;
+      box-sizing: border-box;
+    }
+
+    .calendar-table th {
+      background-color: var(--dark);
+      color: white;
+      font-weight: bold;
+    }
+
+    .calendar-table td {
+      background-color: var(--light);
+      transition: background 0.3s;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .calendar-table td:hover {
+      background-color: var(--secondary);
+      color: white;
+    }
+
+    .date-number {
+      font-weight: bold;
+      font-size: 16px;
+      display: block;
+    }
+
+    .hari-jawa, .hijriah-date {
+      font-size: 12px;
+      color: #777;
+    }
+
+    @media (max-width: 768px) {
+      .calendar-header h2 {
+        font-size: 18px;
+      }
+
+      .calendar-header button {
+        font-size: 14px;
+        padding: 8px 10px;
+      }
+
+      .calendar-table th, .calendar-table td {
+        height: 70px;
+        font-size: 12px;
+        padding: 4px;
+      }
+
+      .date-number {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="calendar-container">
+  <div class="calendar-header">
+    <button onclick="prevMonth()">&lt;</button>
+    <h2 id="monthYear">April 2025</h2>
+    <button onclick="nextMonth()">&gt;</button>
+  </div>
+  <table class="calendar-table">
+    <thead>
+      <tr>
+        <th>Minggu</th>
+        <th>Senin</th>
+        <th>Selasa</th>
+        <th>Rabu</th>
+        <th>Kamis</th>
+        <th>Jumat</th>
+        <th>Sabtu</th>
+      </tr>
+    </thead>
+    <tbody id="calendarBody">
+      <!-- Baris kalender diisi oleh JavaScript -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+  const monthNames = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+  ];
+
+  const bulanHijriahID = [
+    "Muharram", "Safar", "Rabiul Awal", "Rabiul Akhir", "Jumadil Awal", "Jumadil Akhir",
+    "Rajab", "Syaban", "Ramadhan", "Syawal", "Zulkaidah", "Zulhijah"
+  ];
+
+  const hariJawa = ["Legi", "Pahing", "Pon", "Wage", "Kliwon"];
+  let currentMonth = new Date().getMonth();
+  let currentYear = new Date().getFullYear();
+
+  function getHariPasaranIndex(date) {
+    const baseDate = new Date(2023, 0, 1);
+    const diffDays = Math.floor((date - baseDate) / (1000 * 60 * 60 * 24));
+    return (diffDays % 5 + 5) % 5;
+  }
+
+  function getNotesKey(date, month, year) {
+    return `note-${date}-${month}-${year}`;
+  }
+
+  function saveNote(key, text) {
+    localStorage.setItem(key, text);
+  }
+
+  function loadNote(key) {
+    return localStorage.getItem(key);
+  }
+
+  function convertToHijri(date) {
+    const formatter = new Intl.DateTimeFormat('en-TN-u-ca-islamic', {
+      day: 'numeric', month: 'numeric'
+    });
+    const parts = formatter.formatToParts(date);
+    let day = 1, month = 1;
+    parts.forEach(p => {
+      if (p.type === "day") day = parseInt(p.value);
+      if (p.type === "month") month = parseInt(p.value);
+    });
+    return { day, monthName: bulanHijriahID[month - 1] };
+  }
+
+  function generateCalendar(month, year) {
+    const calendarBody = document.getElementById("calendarBody");
+    const monthYear = document.getElementById("monthYear");
+    calendarBody.innerHTML = "";
+    monthYear.innerText = `${monthNames[month]} ${year}`;
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    let date = 1;
+    let hariPasaranIndex = getHariPasaranIndex(new Date(year, month, 1));
+
+    for (let i = 0; i < 6; i++) {
+      const row = document.createElement("tr");
+
+      for (let j = 0; j < 7; j++) {
+        const cell = document.createElement("td");
+
+        if (i === 0 && j < firstDay) {
+          cell.innerHTML = "";
+        } else if (date > daysInMonth) {
+          break;
+        } else {
+          const pasaran = hariJawa[hariPasaranIndex % 5];
+          const hijri = convertToHijri(new Date(year, month, date));
+          const key = getNotesKey(date, month, year);
+          const savedNote = loadNote(key);
+
+          cell.innerHTML = `
+            <span class="date-number">${date}</span>
+            <span class="hari-jawa">${pasaran}</span><br>
+            <span class="hijriah-date">${hijri.day} ${hijri.monthName}</span>
+          `;
+
+          if (savedNote) {
+            const noteDiv = document.createElement("div");
+            noteDiv.style.fontSize = "10px";
+            noteDiv.style.marginTop = "5px";
+            noteDiv.innerText = savedNote;
+            cell.appendChild(noteDiv);
+          }
+
+          cell.addEventListener('click', () => {
+            const existing = loadNote(key);
+            const catatan = prompt(`Catatan untuk ${date} ${monthNames[month]} ${year}:`, existing || "");
+            if (catatan !== null) {
+              saveNote(key, catatan);
+              generateCalendar(currentMonth, currentYear);
+            }
+          });
+
+          date++;
+          hariPasaranIndex++;
+        }
+
+        row.appendChild(cell);
+      }
+
+      calendarBody.appendChild(row);
+      if (date > daysInMonth) break;
+    }
+  }
+
+  function prevMonth() {
+    currentMonth--;
+    if (currentMonth < 0) {
+      currentMonth = 11;
+      currentYear--;
+    }
+    generateCalendar(currentMonth, currentYear);
+  }
+
+  function nextMonth() {
+    currentMonth++;
+    if (currentMonth > 11) {
+      currentMonth = 0;
+      currentYear++;
+    }
+    generateCalendar(currentMonth, currentYear);
+  }
+
+  generateCalendar(currentMonth, currentYear);
+</script>
+
+</body>
+</html>
