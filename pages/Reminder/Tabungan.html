@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Input Keuangan</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 40px;
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      min-height: 100vh;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+      font-size: 28px;
+    }
+
+    form {
+      max-width: 600px;
+      margin: auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #34495e;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 6px rgba(52, 152, 219, 0.5);
+    }
+
+    button {
+      margin-top: 25px;
+      width: 100%;
+      padding: 12px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    table {
+      width: 90%;
+      margin: 40px auto 0;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #3498db;
+      color: white;
+    }
+
+    td {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <h2>Form Input Keuangan</h2>
+  <form id="formKeuangan">
+    <label for="tanggal">Tanggal:</label>
+    <input type="date" id="tanggal" name="tanggal" required>
+
+    <label for="bulan">Bulan:</label>
+    <select id="bulan" name="bulan" required>
+      <option value="">-- Pilih Bulan --</option>
+      <option value="Januari">Januari</option>
+      <option value="Februari">Februari</option>
+      <option value="Maret">Maret</option>
+      <option value="April">April</option>
+      <option value="Mei">Mei</option>
+      <option value="Juni">Juni</option>
+      <option value="Juli">Juli</option>
+      <option value="Agustus">Agustus</option>
+      <option value="September">September</option>
+      <option value="Oktober">Oktober</option>
+      <option value="November">November</option>
+      <option value="Desember">Desember</option>
+    </select>
+
+    <label for="kategori">Kategori:</label>
+    <input type="text" id="kategori" name="kategori" required>
+
+    <label for="nominal">Nominal (Rp):</label>
+    <input type="number" id="nominal" name="nominal" required>
+
+    <label for="keterangan">Keterangan:</label>
+    <textarea id="keterangan" name="keterangan" rows="3"></textarea>
+
+    <button type="submit">Simpan</button>
+  </form>
+
+  <table id="tabelData">
+    <thead>
+      <tr>
+        <th>Tanggal</th>
+        <th>Bulan</th>
+        <th>Kategori</th>
+        <th>Nominal (Rp)</th>
+        <th>Keterangan</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const form = document.getElementById('formKeuangan');
+    const tabelBody = document.querySelector('#tabelData tbody');
+
+    // Ambil data dari localStorage saat halaman dimuat
+    window.onload = function () {
+      const dataTersimpan = JSON.parse(localStorage.getItem('dataKeuangan')) || [];
+      dataTersimpan.forEach(data => tambahBaris(data));
+    };
+
+    // Tambahkan baris ke tabel
+    function tambahBaris(data) {
+      const baris = document.createElement('tr');
+      baris.innerHTML = `
+        <td>${data.tanggal}</td>
+        <td>${data.bulan}</td>
+        <td>${data.kategori}</td>
+        <td>${parseInt(data.nominal).toLocaleString('id-ID')}</td>
+        <td>${data.keterangan}</td>
+      `;
+      tabelBody.appendChild(baris);
+    }
+
+    // Simpan data ke localStorage dan tampilkan
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const data = {
+        tanggal: form.tanggal.value,
+        bulan: form.bulan.value,
+        kategori: form.kategori.value,
+        nominal: form.nominal.value,
+        keterangan: form.keterangan.value
+      };
+
+      // Simpan ke localStorage
+      const dataTersimpan = JSON.parse(localStorage.getItem('dataKeuangan')) || [];
+      dataTersimpan.push(data);
+      localStorage.setItem('dataKeuangan', JSON.stringify(dataTersimpan));
+
+      // Tampilkan data baru
+      tambahBaris(data);
+
+      // Reset form
+      form.reset();
+    });
+  </script>
+</body>
+</html>
