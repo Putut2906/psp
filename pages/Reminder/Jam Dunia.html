@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Singghara</title>
+    <link rel="stylesheet" href="https://putut2906.github.io/psp/style.css" />
+    <link
+      href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div id="sidebar-container"></div>
+    <!-- Sidebar akan dimuat di sini -->
+    <script>
+      function initSidebar() {
+        let arrows = document.querySelectorAll(".arrow");
+        arrows.forEach((arrow) => {
+          arrow.addEventListener("click", (e) => {
+            let arrowParent = e.target.closest("li"); // Menggunakan closest() untuk keamanan
+            arrowParent.classList.toggle("showMenu");
+          });
+        });
+
+        let sidebar = document.querySelector(".sidebar");
+        let sidebarBtn = document.querySelector(".bx-menu");
+
+        if (sidebar && sidebarBtn) {
+          sidebarBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("close");
+          });
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("https://putut2906.github.io/psp/sidebar.html")
+          .then((response) => response.text())
+          .then((data) => {
+            document.getElementById("sidebar-container").innerHTML = data;
+            initSidebar(); // Panggil fungsi setelah sidebar dimuat
+          });
+      });
+    </script>
+  </body>
+</html>
+
+
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      background: linear-gradient(to right, #dce35b, #45b649);
+      color: #333;
+      margin: 0;
+      text-align: center;
+      margin-left: 65px;
+    }
+
+    h1 {
+      color: #fff;
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+
+    label, input, select {
+      font-size: 1em;
+      margin: 10px auto;
+      display: block;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    select, input {
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .jam {
+      font-size: 1.5em;
+      font-weight: bold;
+      background-color: #ffffffaa;
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 600px;
+      border-radius: 12px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        flex-wrap: wrap;
+      }
+
+      .container div {
+        flex: 1;
+        max-width: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Jam Dunia Berdasarkan Negara</h1>
+
+  <div class="container">
+    <div>
+      <label for="searchLokal">Cari Negara Tempat Tinggal:</label>
+      <input type="text" id="searchLokal" placeholder="Cari...">
+      <label for="lokal">Negara Tempat Tinggal:</label>
+      <select id="lokal"></select>
+    </div>
+
+    <div>
+      <label for="searchTujuan">Cari Negara Tujuan:</label>
+      <input type="text" id="searchTujuan" placeholder="Cari...">
+      <label for="tujuan">Negara Tujuan:</label>
+      <select id="tujuan"></select>
+    </div>
+  </div>
+
+  <div class="jam">
+    <p id="jamLokal">Jam Lokal: --:--:--</p>
+    <p id="jamTujuan">Jam Tujuan: --:--:--</p>
+  </div>
+
+  <script>
+    const countries = {
+      "Indonesia": "Asia/Jakarta",
+      "Amerika Serikat": "America/New_York",
+      "Kanada": "America/Toronto",
+      "Brazil": "America/Sao_Paulo",
+      "Inggris": "Europe/London",
+      "Perancis": "Europe/Paris",
+      "Jerman": "Europe/Berlin",
+      "Italia": "Europe/Rome",
+      "Spanyol": "Europe/Madrid",
+      "Rusia": "Europe/Moscow",
+      "India": "Asia/Kolkata",
+      "Cina": "Asia/Shanghai",
+      "Jepang": "Asia/Tokyo",
+      "Korea Selatan": "Asia/Seoul",
+      "Australia": "Australia/Sydney",
+      "Arab Saudi": "Asia/Riyadh",
+      "Afrika Selatan": "Africa/Johannesburg",
+      "Mesir": "Africa/Cairo",
+      "Argentina": "America/Argentina/Buenos_Aires",
+      "Meksiko": "America/Mexico_City",
+      "Turki": "Europe/Istanbul",
+      "Thailand": "Asia/Bangkok",
+      "Malaysia": "Asia/Kuala_Lumpur",
+      "Singapura": "Asia/Singapore",
+      "Vietnam": "Asia/Ho_Chi_Minh",
+      "Filipina": "Asia/Manila",
+      "Pakistan": "Asia/Karachi",
+      "Bangladesh": "Asia/Dhaka",
+      "Nigeria": "Africa/Lagos",
+      "Kenya": "Africa/Nairobi",
+      "Iran": "Asia/Tehran",
+      "Irak": "Asia/Baghdad",
+      "Israel": "Asia/Jerusalem"
+    };
+
+    const lokalSelect = document.getElementById('lokal');
+    const tujuanSelect = document.getElementById('tujuan');
+    const jamLokal = document.getElementById('jamLokal');
+    const jamTujuan = document.getElementById('jamTujuan');
+    const searchLokal = document.getElementById('searchLokal');
+    const searchTujuan = document.getElementById('searchTujuan');
+
+    function populateSelect(select, filter = '') {
+      select.innerHTML = '';
+      Object.keys(countries).forEach(country => {
+        if (country.toLowerCase().includes(filter.toLowerCase())) {
+          const option = document.createElement('option');
+          option.value = countries[country];
+          option.textContent = country;
+          select.appendChild(option);
+        }
+      });
+    }
+
+    function updateJam() {
+      const lokalTZ = lokalSelect.value;
+      const tujuanTZ = tujuanSelect.value;
+      const now = new Date();
+
+      const lokalTime = now.toLocaleTimeString('id-ID', { timeZone: lokalTZ });
+      const tujuanTime = now.toLocaleTimeString('id-ID', { timeZone: tujuanTZ });
+
+      jamLokal.textContent = `Jam Lokal: ${lokalTime}`;
+      jamTujuan.textContent = `Jam Tujuan: ${tujuanTime}`;
+    }
+
+    searchLokal.addEventListener('input', () => populateSelect(lokalSelect, searchLokal.value));
+    searchTujuan.addEventListener('input', () => populateSelect(tujuanSelect, searchTujuan.value));
+
+    populateSelect(lokalSelect);
+    populateSelect(tujuanSelect);
+
+    lokalSelect.selectedIndex = 0;
+    tujuanSelect.selectedIndex = 1;
+
+    setInterval(updateJam, 1000);
+  </script>
+</body>
+</html>
