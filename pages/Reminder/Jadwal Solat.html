@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Jam Dunia & Jadwal Salat</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      background: linear-gradient(to right, #dce35b, #45b649);
+      color: #333;
+      margin: 0;
+      text-align: center;
+      margin-left: 65px;
+    }
+
+    h1, h2 {
+      color: #fff;
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+
+    label, input, select {
+      font-size: 1em;
+      margin: 10px auto;
+      display: block;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    select, input {
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .jam {
+      font-size: 1.2em;
+      background-color: #ffffffaa;
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 600px;
+      border-radius: 12px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        flex-wrap: wrap;
+      }
+
+      .container div {
+        flex: 1;
+        max-width: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Jam Dunia Berdasarkan Negara</h1>
+
+  <div class="container">
+    <div>
+      <label for="searchLokal">Cari Negara Tempat Tinggal:</label>
+      <input type="text" id="searchLokal" placeholder="Cari...">
+      <label for="lokal">Negara Tempat Tinggal:</label>
+      <select id="lokal"></select>
+    </div>
+
+    <div>
+      <label for="searchTujuan">Cari Negara Tujuan:</label>
+      <input type="text" id="searchTujuan" placeholder="Cari...">
+      <label for="tujuan">Negara Tujuan:</label>
+      <select id="tujuan"></select>
+    </div>
+  </div>
+
+  <div class="jam">
+    <p id="jamLokal">Jam Lokal: --:--:--</p>
+    <p id="jamTujuan">Jam Tujuan: --:--:--</p>
+  </div>
+
+  <div class="jam" id="jadwalSholat">
+    <h2>Jadwal Salat</h2>
+    <p id="subuh">Subuh: --:--</p>
+    <p id="dzuhur">Dzuhur: --:--</p>
+    <p id="ashar">Ashar: --:--</p>
+    <p id="maghrib">Maghrib: --:--</p>
+    <p id="isya">Isya: --:--</p>
+  </div>
+
+  <script>
+    const countries = {
+      "Indonesia": "Jakarta",
+      "Amerika Serikat": "New York",
+      "Kanada": "Toronto",
+      "Brazil": "Sao Paulo",
+      "Inggris": "London",
+      "Perancis": "Paris",
+      "Jerman": "Berlin",
+      "Italia": "Rome",
+      "Spanyol": "Madrid",
+      "Rusia": "Moscow",
+      "India": "Delhi",
+      "Cina": "Shanghai",
+      "Jepang": "Tokyo",
+      "Korea Selatan": "Seoul",
+      "Australia": "Sydney",
+      "Arab Saudi": "Riyadh",
+      "Afrika Selatan": "Johannesburg",
+      "Mesir": "Cairo",
+      "Argentina": "Buenos Aires",
+      "Meksiko": "Mexico City",
+      "Turki": "Istanbul",
+      "Thailand": "Bangkok",
+      "Malaysia": "Kuala Lumpur",
+      "Singapura": "Singapore",
+      "Vietnam": "Ho Chi Minh",
+      "Filipina": "Manila",
+      "Pakistan": "Karachi",
+      "Bangladesh": "Dhaka",
+      "Nigeria": "Lagos",
+      "Kenya": "Nairobi",
+      "Iran": "Tehran",
+      "Irak": "Baghdad",
+      "Israel": "Jerusalem"
+    };
+
+    const lokalSelect = document.getElementById('lokal');
+    const tujuanSelect = document.getElementById('tujuan');
+    const jamLokal = document.getElementById('jamLokal');
+    const jamTujuan = document.getElementById('jamTujuan');
+    const searchLokal = document.getElementById('searchLokal');
+    const searchTujuan = document.getElementById('searchTujuan');
+
+    function populateSelect(select, filter = '') {
+      select.innerHTML = '';
+      Object.keys(countries).forEach(country => {
+        if (country.toLowerCase().includes(filter.toLowerCase())) {
+          const option = document.createElement('option');
+          option.value = countries[country];
+          option.textContent = country;
+          select.appendChild(option);
+        }
+      });
+    }
+
+    function updateJam() {
+      const lokalKota = lokalSelect.value;
+      const tujuanKota = tujuanSelect.value;
+
+      const now = new Date();
+
+      const lokalTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const lokalTime = now.toLocaleTimeString('id-ID', { timeZone: getTimeZoneFromCity(lokalKota) });
+      const tujuanTime = now.toLocaleTimeString('id-ID', { timeZone: getTimeZoneFromCity(tujuanKota) });
+
+      jamLokal.textContent = `Jam Lokal: ${lokalTime}`;
+      jamTujuan.textContent = `Jam Tujuan: ${tujuanTime}`;
+
+      getJadwalSholat(lokalKota);
+    }
+
+    function getTimeZoneFromCity(city) {
+      const mapping = {
+        "Jakarta": "Asia/Jakarta",
+        "New York": "America/New_York",
+        "Toronto": "America/Toronto",
+        "Sao Paulo": "America/Sao_Paulo",
+        "London": "Europe/London",
+        "Paris": "Europe/Paris",
+        "Berlin": "Europe/Berlin",
+        "Rome": "Europe/Rome",
+        "Madrid": "Europe/Madrid",
+        "Moscow": "Europe/Moscow",
+        "Delhi": "Asia/Kolkata",
+        "Shanghai": "Asia/Shanghai",
+        "Tokyo": "Asia/Tokyo",
+        "Seoul": "Asia/Seoul",
+        "Sydney": "Australia/Sydney",
+        "Riyadh": "Asia/Riyadh",
+        "Johannesburg": "Africa/Johannesburg",
+        "Cairo": "Africa/Cairo",
+        "Buenos Aires": "America/Argentina/Buenos_Aires",
+        "Mexico City": "America/Mexico_City",
+        "Istanbul": "Europe/Istanbul",
+        "Bangkok": "Asia/Bangkok",
+        "Kuala Lumpur": "Asia/Kuala_Lumpur",
+        "Singapore": "Asia/Singapore",
+        "Ho Chi Minh": "Asia/Ho_Chi_Minh",
+        "Manila": "Asia/Manila",
+        "Karachi": "Asia/Karachi",
+        "Dhaka": "Asia/Dhaka",
+        "Lagos": "Africa/Lagos",
+        "Nairobi": "Africa/Nairobi",
+        "Tehran": "Asia/Tehran",
+        "Baghdad": "Asia/Baghdad",
+        "Jerusalem": "Asia/Jerusalem"
+      };
+      return mapping[city] || "Asia/Jakarta";
+    }
+
+    async function getJadwalSholat(kota) {
+      const now = new Date();
+      const tanggal = now.toISOString().split('T')[0];
+
+      try {
+        const response = await fetch(`https://api.aladhan.com/v1/timingsByAddress/${tanggal}?address=${kota}`);
+        const data = await response.json();
+
+        if (data.code === 200) {
+          const timings = data.data.timings;
+          document.getElementById('subuh').textContent = `Subuh: ${timings.Fajr}`;
+          document.getElementById('dzuhur').textContent = `Dzuhur: ${timings.Dhuhr}`;
+          document.getElementById('ashar').textContent = `Ashar: ${timings.Asr}`;
+          document.getElementById('maghrib').textContent = `Maghrib: ${timings.Maghrib}`;
+          document.getElementById('isya').textContent = `Isya: ${timings.Isha}`;
+        } else {
+          document.getElementById('jadwalSholat').innerHTML = '<p>Gagal mengambil jadwal salat.</p>';
+        }
+      } catch (error) {
+        document.getElementById('jadwalSholat').innerHTML = '<p>Terjadi kesalahan saat mengambil data salat.</p>';
+      }
+    }
+
+    searchLokal.addEventListener('input', () => populateSelect(lokalSelect, searchLokal.value));
+    searchTujuan.addEventListener('input', () => populateSelect(tujuanSelect, searchTujuan.value));
+
+    populateSelect(lokalSelect);
+    populateSelect(tujuanSelect);
+
+    lokalSelect.selectedIndex = 0;
+    tujuanSelect.selectedIndex = 1;
+
+    setInterval(updateJam, 1000);
+  </script>
+</body>
+</html>
