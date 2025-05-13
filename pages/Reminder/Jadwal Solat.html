@@ -7,87 +7,100 @@
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
-      background: #f4f4f4;
+      background: #f0f0f0;
       color: #333;
     }
     h1 {
       text-align: center;
-      color: #007BFF;
+      color: #2c3e50;
     }
     #location {
       text-align: center;
-      margin-bottom: 10px;
+      font-weight: bold;
+      margin: 10px 0;
     }
     table {
       width: 100%;
       max-width: 400px;
-      margin: auto;
+      margin: 0 auto;
       border-collapse: collapse;
-      background: #fff;
+      background-color: #fff;
     }
     th, td {
-      padding: 10px;
-      border: 1px solid #ddd;
+      padding: 12px;
+      border: 1px solid #ccc;
       text-align: center;
     }
     th {
-      background-color: #007BFF;
+      background-color: #3498db;
       color: white;
     }
   </style>
 </head>
 <body>
-  <h1>Jadwal Salat Hari Ini</h1>
-  <div id="location">Mendeteksi lokasi...</div>
-  <table>
-    <thead>
-      <tr>
-        <th>Waktu</th>
-        <th>Jam</th>
-      </tr>
-    </thead>
-    <tbody id="prayer-times">
-      <tr><td>Subuh</td><td id="Fajr">-</td></tr>
-      <tr><td>Dzuhur</td><td id="Dhuhr">-</td></tr>
-      <tr><td>Ashar</td><td id="Asr">-</td></tr>
-      <tr><td>Maghrib</td><td id="Maghrib">-</td></tr>
-      <tr><td>Isya</td><td id="Isha">-</td></tr>
-    </tbody>
-  </table>
 
-  <script>
-    function getPrayerTimes(lat, lon) {
-      const today = new Date();
-      const url = `https://api.aladhan.com/v1/timings/${today.getDate()}-${today.getMonth()+1}-${today.getFullYear()}?latitude=${lat}&longitude=${lon}&method=2`;
+<h1>Jadwal Salat Hari Ini</h1>
+<div id="location">📍 Mendeteksi lokasi Anda...</div>
 
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          const times = data.data.timings;
-          document.getElementById('Fajr').textContent = times.Fajr;
-          document.getElementById('Dhuhr').textContent = times.Dhuhr;
-          document.getElementById('Asr').textContent = times.Asr;
-          document.getElementById('Maghrib').textContent = times.Maghrib;
-          document.getElementById('Isha').textContent = times.Isha;
+<table>
+  <thead>
+    <tr>
+      <th>Waktu Salat</th>
+      <th>Jam</th>
+    </tr>
+  </thead>
+  <tbody id="prayer-times">
+    <tr><td>Subuh</td><td id="Fajr">-</td></tr>
+    <tr><td>Dzuhur</td><td id="Dhuhr">-</td></tr>
+    <tr><td>Ashar</td><td id="Asr">-</td></tr>
+    <tr><td>Maghrib</td><td id="Maghrib">-</td></tr>
+    <tr><td>Isya</td><td id="Isha">-</td></tr>
+  </tbody>
+</table>
 
-          const locationName = data.data.meta.timezone;
-          document.getElementById('location').textContent = `Lokasi: ${locationName}`;
-        })
-        .catch(error => {
-          document.getElementById('location').textContent = 'Gagal mengambil jadwal. Coba lagi.';
-          console.error('Error:', error);
-        });
-    }
+<script>
+  // Fungsi mengambil jadwal salat berdasarkan lokasi
+  function getPrayerTimes(lat, lon) {
+    const today = new Date();
+    const dateStr = `${today.getDate()}-${today.getMonth() + 1}-${today.getFullYear()}`;
+    const apiURL = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lon}&method=2`;
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        getPrayerTimes(position.coords.latitude, position.coords.longitude);
-      }, error => {
-        document.getElementById('location').textContent = 'Izin lokasi ditolak atau tidak tersedia.';
+    fetch(apiURL)
+      .then(res => res.json())
+      .then(data => {
+        const times = data.data.timings;
+        document.getElementById('Fajr').textContent = times.Fajr;
+        document.getElementById('Dhuhr').textContent = times.Dhuhr;
+        document.getElementById('Asr').textContent = times.Asr;
+        document.getElementById('Maghrib').textContent = times.Maghrib;
+        document.getElementById('Isha').textContent = times.Isha;
+
+        // Tampilkan nama kota/wilayah (timezone sebagai pengganti lokasi)
+        const timezone = data.data.meta.timezone;
+        document.getElementById('location').textContent = `📍 Lokasi berdasarkan zona waktu: ${timezone}`;
+      })
+      .catch(err => {
+        document.getElementById('location').textContent = "❌ Gagal mengambil jadwal. Periksa koneksi atau coba lagi.";
+        console.error(err);
       });
-    } else {
-      document.getElementById('location').textContent = 'Browser tidak mendukung Geolocation.';
-    }
-  </script>
+  }
+
+  // Cek apakah browser mendukung geolokasi
+  if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        getPrayerTimes(latitude, longitude);
+      },
+      (err) => {
+        document.getElementById('location').textContent = "❌ Izin lokasi ditolak atau tidak tersedia.";
+        console.error(err);
+      }
+    );
+  } else {
+    document.getElementById('location').textContent = "❌ Geolocation tidak didukung di browser ini.";
+  }
+</script>
+
 </body>
 </html>
