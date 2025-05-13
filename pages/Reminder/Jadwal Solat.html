@@ -1,106 +1,213 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Jadwal Salat Otomatis</title>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Singghara</title>
+    <link rel="stylesheet" href="https://putut2906.github.io/psp/style.css" />
+    <link
+      href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div id="sidebar-container"></div>
+    <!-- Sidebar akan dimuat di sini -->
+    <script>
+      function initSidebar() {
+        let arrows = document.querySelectorAll(".arrow");
+        arrows.forEach((arrow) => {
+          arrow.addEventListener("click", (e) => {
+            let arrowParent = e.target.closest("li"); // Menggunakan closest() untuk keamanan
+            arrowParent.classList.toggle("showMenu");
+          });
+        });
+
+        let sidebar = document.querySelector(".sidebar");
+        let sidebarBtn = document.querySelector(".bx-menu");
+
+        if (sidebar && sidebarBtn) {
+          sidebarBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("close");
+          });
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("https://putut2906.github.io/psp/sidebar.html")
+          .then((response) => response.text())
+          .then((data) => {
+            document.getElementById("sidebar-container").innerHTML = data;
+            initSidebar(); // Panggil fungsi setelah sidebar dimuat
+          });
+      });
+    </script>
+  </body>
+</html>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #e0f7fa, #ffffff);
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      margin-left: 60px;
+    }
+
+    header {
+      background: #00796b;
+      color: white;
       padding: 20px;
-      background: #f0f0f0;
-      color: #333;
+      position: relative;
     }
-    h1 {
-      text-align: center;
-      color: #2c3e50;
+
+    header h1 {
+      margin: 0;
+      font-size: 1.8em;
     }
-    #location {
-      text-align: center;
-      font-weight: bold;
-      margin: 10px 0;
+
+    header .icon {
+      font-size: 1.5em;
+      margin-right: 8px;
     }
+
+    #lokasi {
+      font-size: 0.95em;
+      color: #004d40;
+      margin-top: 8px;
+    }
+
+    main {
+      padding: 20px;
+    }
+
     table {
-      width: 100%;
-      max-width: 400px;
       margin: 0 auto;
       border-collapse: collapse;
-      background-color: #fff;
+      width: 100%;
+      max-width: 450px;
+      background: #ffffff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
     }
+
     th, td {
       padding: 12px;
-      border: 1px solid #ccc;
-      text-align: center;
+      border-bottom: 1px solid #e0e0e0;
     }
+
     th {
-      background-color: #3498db;
+      background: #009688;
       color: white;
+      font-weight: bold;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .loading {
+      color: #999;
+      font-style: italic;
+    }
+
+    footer {
+      margin-top: 30px;
+      font-size: 0.8em;
+      color: #555;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.4em;
+      }
+
+      th, td {
+        font-size: 0.95em;
+        padding: 10px;
+      }
     }
   </style>
 </head>
 <body>
+  <header>
+    <div class="icon">🕌🌙</div>
+    <h1>Jadwal Salat Hari Ini</h1>
+    <div id="lokasi" class="loading">Mendeteksi lokasi...</div>
+  </header>
 
-<h1>Jadwal Salat Hari Ini</h1>
-<div id="location">📍 Mendeteksi lokasi Anda...</div>
+  <main>
+    <table id="jadwalTable">
+      <thead>
+        <tr>
+          <th>Waktu</th>
+          <th>Jam</th>
+        </tr>
+      </thead>
+      <tbody id="jadwalBody">
+        <tr><td colspan="2" class="loading">Memuat data jadwal salat...</td></tr>
+      </tbody>
+    </table>
+  </main>
 
-<table>
-  <thead>
-    <tr>
-      <th>Waktu Salat</th>
-      <th>Jam</th>
-    </tr>
-  </thead>
-  <tbody id="prayer-times">
-    <tr><td>Subuh</td><td id="Fajr">-</td></tr>
-    <tr><td>Dzuhur</td><td id="Dhuhr">-</td></tr>
-    <tr><td>Ashar</td><td id="Asr">-</td></tr>
-    <tr><td>Maghrib</td><td id="Maghrib">-</td></tr>
-    <tr><td>Isya</td><td id="Isha">-</td></tr>
-  </tbody>
-</table>
+  <footer>
+    &copy; 2025 | Jadwal Salat Real-Time - Sumber: Aladhan API
+  </footer>
 
-<script>
-  // Fungsi mengambil jadwal salat berdasarkan lokasi
-  function getPrayerTimes(lat, lon) {
-    const today = new Date();
-    const dateStr = `${today.getDate()}-${today.getMonth() + 1}-${today.getFullYear()}`;
-    const apiURL = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lon}&method=2`;
+  <script>
+    function fetchJadwal(lat, lon) {
+      const today = new Date();
+      const tanggal = today.toISOString().split('T')[0];
+      const apiURL = `https://api.aladhan.com/v1/timings/${tanggal}?latitude=${lat}&longitude=${lon}&method=2`;
 
-    fetch(apiURL)
-      .then(res => res.json())
-      .then(data => {
-        const times = data.data.timings;
-        document.getElementById('Fajr').textContent = times.Fajr;
-        document.getElementById('Dhuhr').textContent = times.Dhuhr;
-        document.getElementById('Asr').textContent = times.Asr;
-        document.getElementById('Maghrib').textContent = times.Maghrib;
-        document.getElementById('Isha').textContent = times.Isha;
+      fetch(apiURL)
+        .then(res => res.json())
+        .then(data => {
+          const lokasi = data.data.meta.timezone;
+          const timings = data.data.timings;
+          document.getElementById('lokasi').innerText = `Lokasi: ${lokasi}`;
 
-        // Tampilkan nama kota/wilayah (timezone sebagai pengganti lokasi)
-        const timezone = data.data.meta.timezone;
-        document.getElementById('location').textContent = `📍 Lokasi berdasarkan zona waktu: ${timezone}`;
-      })
-      .catch(err => {
-        document.getElementById('location').textContent = "❌ Gagal mengambil jadwal. Periksa koneksi atau coba lagi.";
-        console.error(err);
-      });
-  }
+          const waktuList = ['Imsak', 'Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+          const namaIndonesia = {
+            Imsak: 'Imsak',
+            Fajr: 'Subuh',
+            Sunrise: 'Syuruk',
+            Dhuhr: 'Dzuhur',
+            Asr: 'Ashar',
+            Maghrib: 'Maghrib',
+            Isha: 'Isya'
+          };
 
-  // Cek apakah browser mendukung geolokasi
-  if ("geolocation" in navigator) {
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        getPrayerTimes(latitude, longitude);
-      },
-      (err) => {
-        document.getElementById('location').textContent = "❌ Izin lokasi ditolak atau tidak tersedia.";
-        console.error(err);
+          let html = '';
+          waktuList.forEach(waktu => {
+            html += `<tr><td>${namaIndonesia[waktu]}</td><td>${timings[waktu]}</td></tr>`;
+          });
+
+          document.getElementById('jadwalBody').innerHTML = html;
+        })
+        .catch(() => {
+          document.getElementById('jadwalBody').innerHTML = '<tr><td colspan="2">Gagal memuat data jadwal.</td></tr>';
+        });
+    }
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          pos => fetchJadwal(pos.coords.latitude, pos.coords.longitude),
+          err => {
+            document.getElementById('lokasi').innerText = 'Gagal mendeteksi lokasi.';
+            document.getElementById('jadwalBody').innerHTML = '<tr><td colspan="2">Lokasi tidak tersedia.</td></tr>';
+          }
+        );
+      } else {
+        document.getElementById('lokasi').innerText = 'Browser tidak mendukung lokasi.';
       }
-    );
-  } else {
-    document.getElementById('location').textContent = "❌ Geolocation tidak didukung di browser ini.";
-  }
-</script>
+    }
 
+    getLocation();
+  </script>
 </body>
 </html>
