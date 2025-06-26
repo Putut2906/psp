@@ -46,168 +46,218 @@
     </script>
   </body>
 </html>
+
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom, #e0f7fa, #ffffff);
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #1e1e2f;
+      color: white;
+      font-family: 'Comic Sans MS', cursive;
       text-align: center;
-      margin-left: 60px;
-    }
-
-    header {
-      background: #00796b;
-      color: white;
-      padding: 20px;
-      position: relative;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 1.8em;
-    }
-
-    header .icon {
-      font-size: 1.5em;
-      margin-right: 8px;
-    }
-
-    #lokasi {
-      font-size: 0.95em;
-      color: #004d40;
-      margin-top: 8px;
-    }
-
-    main {
-      padding: 20px;
-    }
-
-    table {
-      margin: 0 auto;
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 450px;
-      background: #ffffff;
-      border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
     }
 
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid #e0e0e0;
+    h1 {
+      font-size: 3em;
+      margin-top: 40px;
+      color: #FFD700;
+      animation: glow 2s ease-in-out infinite alternate;
     }
 
-    th {
-      background: #009688;
+    p {
+      font-size: 1.5em;
+      margin: 20px;
+      color: #ffffff;
+    }
+
+    .cake {
+      margin: 30px auto;
+      width: 250px;
+      height: auto;
+      animation: bounce 2s infinite;
+    }
+
+    .btn {
+      background-color: #ff4081;
       color: white;
-      font-weight: bold;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 20px;
     }
 
-    tr:last-child td {
-      border-bottom: none;
+    .btn:hover {
+      background-color: #e91e63;
     }
 
-    .loading {
-      color: #999;
-      font-style: italic;
-    }
-
-    footer {
-      margin-top: 30px;
-      font-size: 0.8em;
-      color: #555;
-    }
-
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 1.4em;
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 10px #ff1493, 0 0 20px #ff69b4;
       }
+      to {
+        text-shadow: 0 0 20px #ff1493, 0 0 30px #ff69b4;
+      }
+    }
 
-      th, td {
-        font-size: 0.95em;
-        padding: 10px;
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    .balloon {
+      position: absolute;
+      bottom: -100px;
+      width: 40px;
+      height: 60px;
+      background: radial-gradient(circle, #ff69b4 0%, #e91e63 100%);
+      border-radius: 50% 50% 45% 45%;
+      animation: floatBalloon 10s linear infinite;
+    }
+
+    @keyframes floatBalloon {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-110vh) rotate(360deg);
+        opacity: 0;
       }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="icon">🕌🌙</div>
-    <h1>Jadwal Salat Hari Ini</h1>
-    <div id="lokasi" class="loading">Mendeteksi lokasi...</div>
-  </header>
 
-  <main>
-    <table id="jadwalTable">
-      <thead>
-        <tr>
-          <th>Waktu</th>
-          <th>Jam</th>
-        </tr>
-      </thead>
-      <tbody id="jadwalBody">
-        <tr><td colspan="2" class="loading">Memuat data jadwal salat...</td></tr>
-      </tbody>
-    </table>
-  </main>
+  <h1>🎉 Selamat Ulang Tahun! 🎂</h1>
+  <img class="cake" src="https://pngimg.com/uploads/birthday_cake/birthday_cake_PNG97.png" alt="Kue Ulang Tahun">
+  <p>Semoga hari spesial ini membawa kebahagiaan, cinta, dan keberkahan tak terhingga!</p>
+  <button class="btn" onclick="showFireworks()">Nyalakan Kembang Api 🎇</button>
 
-  <footer>
-    &copy; 2025 | Jadwal Salat Real-Time - Sumber: Aladhan API
-  </footer>
+  <!-- Musik Otomatis -->
+  <audio id="birthdaySong" autoplay loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+    Browsermu tidak mendukung audio.
+  </audio>
 
+  <!-- Canvas Kembang Api -->
+  <canvas id="fireworks"></canvas>
+
+  <!-- Balon -->
   <script>
-    function fetchJadwal(lat, lon) {
-      const today = new Date();
-      const tanggal = today.toISOString().split('T')[0];
-      const apiURL = `https://api.aladhan.com/v1/timings/${tanggal}?latitude=${lat}&longitude=${lon}&method=2`;
+    for (let i = 0; i < 20; i++) {
+      const balloon = document.createElement("div");
+      balloon.classList.add("balloon");
+      balloon.style.left = Math.random() * 100 + "vw";
+      balloon.style.background = `radial-gradient(circle, hsl(${Math.random() * 360}, 80%, 60%) 0%, hsl(${Math.random() * 360}, 80%, 40%) 100%)`;
+      balloon.style.animationDelay = Math.random() * 5 + "s";
+      balloon.style.zIndex = "0";
+      document.body.appendChild(balloon);
+    }
+  </script>
 
-      fetch(apiURL)
-        .then(res => res.json())
-        .then(data => {
-          const lokasi = data.data.meta.timezone;
-          const timings = data.data.timings;
-          document.getElementById('lokasi').innerText = `Lokasi: ${lokasi}`;
+  <!-- JavaScript Kembang Api -->
+  <script>
+    const canvas = document.getElementById('fireworks');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-          const waktuList = ['Imsak', 'Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-          const namaIndonesia = {
-            Imsak: 'Imsak',
-            Fajr: 'Subuh',
-            Sunrise: 'Syuruk',
-            Dhuhr: 'Dzuhur',
-            Asr: 'Ashar',
-            Maghrib: 'Maghrib',
-            Isha: 'Isya'
-          };
+    const fireworks = [];
 
-          let html = '';
-          waktuList.forEach(waktu => {
-            html += `<tr><td>${namaIndonesia[waktu]}</td><td>${timings[waktu]}</td></tr>`;
-          });
-
-          document.getElementById('jadwalBody').innerHTML = html;
-        })
-        .catch(() => {
-          document.getElementById('jadwalBody').innerHTML = '<tr><td colspan="2">Gagal memuat data jadwal.</td></tr>';
-        });
+    function showFireworks() {
+      setInterval(() => {
+        fireworks.push(new Firework());
+      }, 500);
     }
 
-    function getLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          pos => fetchJadwal(pos.coords.latitude, pos.coords.longitude),
-          err => {
-            document.getElementById('lokasi').innerText = 'Gagal mendeteksi lokasi.';
-            document.getElementById('jadwalBody').innerHTML = '<tr><td colspan="2">Lokasi tidak tersedia.</td></tr>';
-          }
-        );
-      } else {
-        document.getElementById('lokasi').innerText = 'Browser tidak mendukung lokasi.';
+    class Particle {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.radius = Math.random() * 3 + 2;
+        this.color = color;
+        this.speed = Math.random() * 4 + 1;
+        this.angle = Math.random() * 2 * Math.PI;
+        this.opacity = 1;
+        this.fade = Math.random() * 0.03 + 0.01;
+      }
+
+      update() {
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed;
+        this.opacity -= this.fade;
+      }
+
+      draw(ctx) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+        ctx.fill();
       }
     }
 
-    getLocation();
+    class Firework {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height / 2;
+        this.particles = [];
+        const colors = ['255,99,71', '255,215,0', '30,144,255', '152,251,152', '255,20,147'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        for (let i = 0; i < 50; i++) {
+          this.particles.push(new Particle(this.x, this.y, color));
+        }
+      }
+
+      update() {
+        this.particles.forEach(p => p.update());
+      }
+
+      draw(ctx) {
+        this.particles.forEach(p => p.draw(ctx));
+      }
+
+      isDead() {
+        return this.particles.every(p => p.opacity <= 0);
+      }
+    }
+
+    function animate() {
+      ctx.fillStyle = "rgba(0,0,0,0.2)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = fireworks.length - 1; i >= 0; i--) {
+        const fw = fireworks[i];
+        fw.update();
+        fw.draw(ctx);
+        if (fw.isDead()) {
+          fireworks.splice(i, 1);
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
   </script>
 </body>
 </html>
